@@ -23,7 +23,7 @@ import ApplicantBasicDetails from './components/applicantcomponents/ApplicantBas
 import JobWidget from './components/jobWidget';
 import DropResume from './components/applicantcomponents/DropResume';
 import AtsScore from './components/applicantcomponents/AtsScore';
-
+import ResumeLayout from './components/applicantcomponents/resumebuildercomponents/ResumeLayout';
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -76,6 +76,7 @@ function App() {
                 <>
                 <Route path="/resume-import" element={<DropResume />} />
                 <Route path="/ats-score" element={<AtsScore />} />
+                <Route path="/resume-builder" element={<ResumeLayout />} />
                 <Route path="/applicanthome" element={<ApplicantHomePage />} />
                 <Route path="/applicant-update-profile" element={<ApplicantHomePage />} />
                 <Route path="/applicant-view-profile" element={<ApplicantHomePage />} />

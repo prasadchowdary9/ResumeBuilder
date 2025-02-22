@@ -497,7 +497,7 @@ const DropResume = () => {
 
   // Handle "Create from Scratch"
   const handleCreateFromScratch = () => {
-    alert("Redirecting to Resume Builder");
+    window.location.href = "/resume-builder";
     // Add navigation logic here if using React Router
   };
 
