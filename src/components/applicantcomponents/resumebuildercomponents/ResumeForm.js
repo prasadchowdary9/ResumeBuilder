@@ -1,7 +1,9 @@
-import React from 'react';
-import { FaPlus, FaTrash } from 'react-icons/fa';
 
- const ResumeForm = ({ data, onChange }) => {
+
+import React from "react";
+import { FaPlus, FaTrash } from "react-icons/fa";
+
+const ResumeForm = ({ data, onChange }) => {
   const updatePersonalInfo = (field, value) => {
     onChange({
       ...data,
@@ -11,9 +13,119 @@ import { FaPlus, FaTrash } from 'react-icons/fa';
       },
     });
   };
+   // Function to update education details
+   const updateEducation = (index, field, value) => {
+    const newEducation = [...data.education];
+    newEducation[index] = { ...newEducation[index], [field]: value };
+    onChange({ ...data, education: newEducation });
+  };
+
+  // Function to add a new education entry
+  const addEducation = () => {
+    const newEducation = [
+      ...data.education,
+      { university: '', degree: '', fieldOfStudy: '', graduationDate: '', percentage: '', description: '', school:'' },
+    ];
+    onChange({ ...data, education: newEducation });
+  };
+
+  // Function to remove an education entry
+  const removeEducation = (index) => {
+    const newEducation = data.education.filter((_, i) => i !== index);
+    onChange({ ...data, education: newEducation });
+  };
+  // Function to update project details
+const updateProject = (index, field, value) => {
+  const newProjects = [...data.projects];
+  newProjects[index] = { ...newProjects[index], [field]: value };
+  onChange({ ...data, projects: newProjects });
+};
+
+// Function to add a new project entry
+const addProject = () => {
+  const newProjects = [
+    ...data.projects,
+    { title: '', description: '', technologies: '', link: '' },
+  ];
+  onChange({ ...data, projects: newProjects });
+};
+
+// Function to remove a project entry
+const removeProject = (index) => {
+  const newProjects = data.projects.filter((_, i) => i !== index);
+  onChange({ ...data, projects: newProjects });
+};
+
+// Function to update certification details
+const updateCertification = (index, field, value) => {
+  const newCertifications = [...data.certifications];
+  newCertifications[index] = { ...newCertifications[index], [field]: value };
+  onChange({ ...data, certifications: newCertifications });
+};
+
+// Function to add a new certification entry
+const addCertification = () => {
+  const newCertifications = [
+    ...data.certifications,
+    { name: '', issuingOrganization: '', issueDate: '', expirationDate: '', credentialID: '', credentialURL: '' },
+  ];
+  onChange({ ...data, certifications: newCertifications });
+};
+
+// Function to remove a certification entry
+const removeCertification = (index) => {
+  const newCertifications = data.certifications.filter((_, i) => i !== index);
+  onChange({ ...data, certifications: newCertifications });
+};
+
+
+const addSkill = () => {
+  const newSkills = [...data.skills, ''];
+  onChange({ ...data, skills: newSkills });
+};
+
+const removeSkill = (index) => {
+  const newSkills = data.skills.filter((_, i) => i !== index);
+  onChange({ ...data, skills: newSkills });
+};
+// lnaguage
+const addLanguage = () => {
+  const newLanguages = [...data.languages, '']; // Add an empty language
+  onChange({ ...data, languages: newLanguages });
+};
+
+const updateLanguage = (index, value) => {
+  const newLanguages = [...data.languages];
+  newLanguages[index] = value;
+  onChange({ ...data, languages: newLanguages });
+};
+
+const removeLanguage = (index) => {
+  const newLanguages = data.languages.filter((_, i) => i !== index);
+  onChange({ ...data, languages: newLanguages });
+};
+
+// intrest
+
+const addInterest = () => {
+  const newInterests = [...data.interests, '']; // Add an empty interest
+  onChange({ ...data, interests: newInterests });
+};
+
+const updateInterest = (index, value) => {
+  const newInterests = [...data.interests];
+  newInterests[index] = value;
+  onChange({ ...data, interests: newInterests });
+};
+
+const removeInterest = (index) => {
+  const newInterests = data.interests.filter((_, i) => i !== index);
+  onChange({ ...data, interests: newInterests });
+};
 
   return (
-    <div className="container py-4">
+    <div className="container row py-4">
+      {/* Personal Information */}
       <div className="mb-4">
         <h2 className="h4">Personal Information</h2>
         <div className="row g-3">
@@ -24,7 +136,7 @@ import { FaPlus, FaTrash } from 'react-icons/fa';
               className="form-control"
               placeholder="Full Name"
               value={data.personalInfo.name}
-              onChange={(e) => updatePersonalInfo('name', e.target.value)}
+              onChange={(e) => updatePersonalInfo("name", e.target.value)}
             />
           </div>
           <div className="col-md-6">
@@ -34,7 +146,7 @@ import { FaPlus, FaTrash } from 'react-icons/fa';
               className="form-control"
               placeholder="Professional Title"
               value={data.personalInfo.title}
-              onChange={(e) => updatePersonalInfo('title', e.target.value)}
+              onChange={(e) => updatePersonalInfo("title", e.target.value)}
             />
           </div>
           <div className="col-md-6">
@@ -44,7 +156,7 @@ import { FaPlus, FaTrash } from 'react-icons/fa';
               className="form-control"
               placeholder="Email"
               value={data.personalInfo.email}
-              onChange={(e) => updatePersonalInfo('email', e.target.value)}
+              onChange={(e) => updatePersonalInfo("email", e.target.value)}
             />
           </div>
           <div className="col-md-6">
@@ -54,7 +166,7 @@ import { FaPlus, FaTrash } from 'react-icons/fa';
               className="form-control"
               placeholder="Phone"
               value={data.personalInfo.phone}
-              onChange={(e) => updatePersonalInfo('phone', e.target.value)}
+              onChange={(e) => updatePersonalInfo("phone", e.target.value)}
             />
           </div>
           <div className="col-md-12">
@@ -64,7 +176,7 @@ import { FaPlus, FaTrash } from 'react-icons/fa';
               className="form-control"
               placeholder="Location"
               value={data.personalInfo.location}
-              onChange={(e) => updatePersonalInfo('location', e.target.value)}
+              onChange={(e) => updatePersonalInfo("location", e.target.value)}
             />
           </div>
           <div className="col-md-12">
@@ -74,12 +186,13 @@ import { FaPlus, FaTrash } from 'react-icons/fa';
               placeholder="Professional Summary"
               rows="3"
               value={data.personalInfo.summary}
-              onChange={(e) => updatePersonalInfo('summary', e.target.value)}
+              onChange={(e) => updatePersonalInfo("summary", e.target.value)}
             />
           </div>
         </div>
       </div>
-      {/* Example of adding an experience section */}
+
+      {/* Experience Section */}
       <div className="mb-4">
         <h2 className="h4">Experience</h2>
         {data.experience.map((exp, index) => (
@@ -122,7 +235,21 @@ import { FaPlus, FaTrash } from 'react-icons/fa';
                 }}
               />
             </div>
-            {/* Add more fields as needed */}
+            {/* Duration Field */}
+            <div className="mb-3">
+              <label className="form-label">Duration</label>
+              <input
+                type="text"
+                className="form-control"
+                placeholder="e.g. Jan 2020 - Dec 2023"
+                value={exp.duration}
+                onChange={(e) => {
+                  const newExperience = [...data.experience];
+                  newExperience[index].duration = e.target.value;
+                  onChange({ ...data, experience: newExperience });
+                }}
+              />
+            </div>
           </div>
         ))}
         <button
@@ -131,7 +258,7 @@ import { FaPlus, FaTrash } from 'react-icons/fa';
           onClick={() => {
             const newExperience = [
               ...data.experience,
-              { company: '', position: '' /* Add other fields as needed */ },
+              { company: "", position: "", duration: "" },
             ];
             onChange({ ...data, experience: newExperience });
           }}
@@ -140,10 +267,416 @@ import { FaPlus, FaTrash } from 'react-icons/fa';
           Add Experience
         </button>
       </div>
+      {/* Education Section */}
+      {/* <div className="mb-4">
+        <h2 className="h4">Education</h2>
+        {data.education.map((edu, index) => (
+          <div key={index} className="mb-3 border p-3 position-relative">
+            <button
+              type="button"
+              className="btn btn-danger position-absolute top-0 end-0 m-2"
+              onClick={() => removeEducation(index)}
+            >
+              <FaTrash />
+            </button>
+            <div className="mb-3">
+              <label className="form-label">School</label>
+              <input
+                type="text"
+                className="form-control"
+                placeholder="School"
+                value={edu.school}
+                onChange={(e) => updateEducation(index, 'school', e.target.value)}
+              />
+            </div>
+            <div className="mb-3">
+              <label className="form-label">Degree</label>
+              <input
+                type="text"
+                className="form-control"
+                placeholder="Degree"
+                value={edu.degree}
+                onChange={(e) => updateEducation(index, 'degree', e.target.value)}
+              />
+            </div>
+            <div className="mb-3">
+              <label className="form-label">Graduation Date</label>
+              <input
+                type="text"
+                className="form-control"
+                placeholder="e.g. May 2024"
+                value={edu.graduationDate}
+                onChange={(e) => updateEducation(index, 'graduationDate', e.target.value)}
+              />
+            </div>
+            <div className="mb-3">
+              <label className="form-label">Description</label>
+              <textarea
+                className="form-control"
+                placeholder="Describe your studies, achievements, or relevant coursework"
+                rows="3"
+                value={edu.description}
+                onChange={(e) => updateEducation(index, 'description', e.target.value)}
+              />
+            </div>
+          </div>
+        ))}
+        <button
+          type="button"
+          className="btn btn-primary"
+          onClick={addEducation}
+        >
+          <FaPlus className="me-2" />
+          Add Education
+        </button>
+      </div> */}
+      <div className="mb-4">
+        <h2 className="h4">Education</h2>
+        {data.education.map((edu, index) => (
+          <div key={index} className="mb-3 border p-3 position-relative">
+            <button
+              type="button"
+              className="btn btn-danger position-absolute top-0 end-0 m-2"
+              onClick={() => removeEducation(index)}
+            >
+              <FaTrash />
+            </button>
+            <div className="mb-3">
+              <label className="form-label">University</label>
+              <input
+                type="text"
+                className="form-control"
+                placeholder="University"
+                value={edu.university}
+                onChange={(e) => updateEducation(index, 'university', e.target.value)}
+              />
+            </div>
+            <div className="mb-3">
+              <label className="form-label">College</label>
+              <input
+                type="text"
+                className="form-control"
+                placeholder="School"
+                value={edu.school}
+                onChange={(e) => updateEducation(index, 'school', e.target.value)}
+              />
+            </div>
+            <div className="mb-3">
+              <label className="form-label">Degree</label>
+              <input
+                type="text"
+                className="form-control"
+                placeholder="Degree"
+                value={edu.degree}
+                onChange={(e) => updateEducation(index, 'degree', e.target.value)}
+              />
+            </div>
+            <div className="mb-3">
+              <label className="form-label">Field of Study</label>
+              <input
+                type="text"
+                className="form-control"
+                placeholder="Field of Study"
+                value={edu.fieldOfStudy}
+                onChange={(e) => updateEducation(index, 'fieldOfStudy', e.target.value)}
+              />
+            </div>
+            <div className="mb-3">
+              <label className="form-label">Graduation Date</label>
+              <input
+                type="text"
+                className="form-control"
+                placeholder="e.g., May 2024"
+                value={edu.graduationDate}
+                onChange={(e) => updateEducation(index, 'graduationDate', e.target.value)}
+              />
+            </div>
+            <div className="mb-3">
+              <label className="form-label">Percentage</label>
+              <input
+                type="text"
+                className="form-control"
+                placeholder="e.g., 85%"
+                value={edu.percentage}
+                onChange={(e) => updateEducation(index, 'percentage', e.target.value)}
+              />
+            </div>
+            <div className="mb-3">
+              <label className="form-label">Description</label>
+              <textarea
+                className="form-control"
+                placeholder="Describe your studies, achievements, or relevant coursework"
+                rows="3"
+                value={edu.description}
+                onChange={(e) => updateEducation(index, 'description', e.target.value)}
+              />
+            </div>
+          </div>
+        ))}
+        <button
+          type="button"
+          className="btn btn-primary"
+          onClick={addEducation}
+        >
+          <FaPlus className="me-2" />
+          Add Education
+        </button>
+      </div>
+      <div className="mb-4">
+        <h2 className="h4">Skills</h2>
+        {data.skills.map((skill, index) => (
+          <div key={index} className="mb-3 border p-3 position-relative">
+            <button
+              type="button"
+              className="btn btn-danger position-absolute top-0 end-0 m-2"
+              onClick={() => removeSkill(index)}
+            >
+              <FaTrash />
+            </button>
+            <div className="mb-3">
+              <label className="form-label">Skill</label>
+              <input
+                type="text"
+                className="form-control"
+                placeholder="Skill"
+                value={skill}
+                onChange={(e) => {const newSkills = [...data.skills];
+                  newSkills[index] = e.target.value;
+                  onChange({ ...data, skills: newSkills });}}
+              />  
+            </div>
+          </div>
+        ))}
+        <button
+          type="button"
+          className="btn btn-primary"
+          onClick={addSkill}
+        >
+          <FaPlus className="me-2" />
+          Add Skill
+        </button>
+      </div>
+      {/* languages */}
+      <div className="mb-4">
+        <h2 className="h4">Languages</h2>
+        {data.languages.map((language, index) => (
+          <div key={index} className="mb-3 border p-3 position-relative">
+            <button
+              type="button"
+              className="btn btn-danger position-absolute top-0 end-0 m-2"
+              onClick={() => removeLanguage(index)}
+            >
+              <FaTrash />
+            </button>
+            <div className="mb-3">
+              <label className="form-label">Language</label>
+              <input
+                type="text"
+                className="form-control"
+                placeholder="Language"
+                value={language}
+                onChange={(e) => updateLanguage(index, e.target.value)}
+              />
+            </div>
+          </div>
+        ))}
+        <button
+          type="button"
+          className="btn btn-primary"
+          onClick={addLanguage}
+        >
+          <FaPlus className="me-2" />
+          Add Language
+        </button>
+      </div>
+      
+ 
+ 
+      {/* Projects Section */}
+      <div className="mb-4">
+  <h2 className="h4">Projects</h2>
+  {data.projects.map((project, index) => (
+    <div key={index} className="mb-3 border p-3 position-relative">
+      <button
+        type="button"
+        className="btn btn-danger position-absolute top-0 end-0 m-2"
+        onClick={() => removeProject(index)}
+      >
+        <FaTrash />
+      </button>
+      <div className="mb-3">
+        <label className="form-label">Project Title</label>
+        <input
+          type="text"
+          className="form-control"
+          placeholder="Project Title"
+          value={project.title}
+          onChange={(e) => updateProject(index, 'title', e.target.value)}
+        />
+      </div>
+      <div className="mb-3">
+        <label className="form-label">Description</label>
+        <textarea
+          className="form-control"
+          placeholder="Brief description of the project"
+          rows="3"
+          value={project.description}
+          onChange={(e) => updateProject(index, 'description', e.target.value)}
+        />
+      </div>
+      <div className="mb-3">
+        <label className="form-label">Technologies Used</label>
+        <input
+          type="text"
+          className="form-control"
+          placeholder="e.g., React, Node.js, MongoDB"
+          value={project.technologies}
+          onChange={(e) => updateProject(index, 'technologies', e.target.value)}
+        />
+      </div>
+      <div className="mb-3">
+        <label className="form-label">Project Link</label>
+        <input
+          type="url"
+          className="form-control"
+          placeholder="URL to the project or repository"
+          value={project.link}
+          onChange={(e) => updateProject(index, 'link', e.target.value)}
+        />
+      </div>
+    </div>
+  ))}
+  <button
+    type="button"
+    className="btn btn-primary"
+    onClick={addProject}
+  >
+    <FaPlus className="me-2" />
+    Add Project
+  </button>
+</div>
+
+<div className="mb-4">
+  <h2 className="h4">Certifications</h2>
+  {data.certifications.map((cert, index) => (
+    <div key={index} className="mb-3 border p-3 position-relative">
+      <button
+        type="button"
+        className="btn btn-danger position-absolute top-0 end-0 m-2"
+        onClick={() => removeCertification(index)}
+      >
+        <FaTrash />
+      </button>
+      <div className="mb-3">
+        <label className="form-label">Certification Name</label>
+        <input
+          type="text"
+          className="form-control"
+          placeholder="Certification Name"
+          value={cert.name}
+          onChange={(e) => updateCertification(index, 'name', e.target.value)}
+        />
+      </div>
+      <div className="mb-3">
+        <label className="form-label">Issuing Organization</label>
+        <input
+          type="text"
+          className="form-control"
+          placeholder="Issuing Organization"
+          value={cert.issuingOrganization}
+          onChange={(e) => updateCertification(index, 'issuingOrganization', e.target.value)}
+        />
+      </div>
+      <div className="mb-3">
+        <label className="form-label">Issue Date</label>
+        <input
+          type="date"
+          className="form-control"
+          value={cert.issueDate}
+          onChange={(e) => updateCertification(index, 'issueDate', e.target.value)}
+        />
+      </div>
+      <div className="mb-3">
+        <label className="form-label">Expiration Date</label>
+        <input
+          type="date"
+          className="form-control"
+          value={cert.expirationDate}
+          onChange={(e) => updateCertification(index, 'expirationDate', e.target.value)}
+        />
+      </div>
+      <div className="mb-3">
+        <label className="form-label">Credential ID</label>
+        <input
+          type="text"
+          className="form-control"
+          placeholder="Credential ID"
+          value={cert.credentialID}
+          onChange={(e) => updateCertification(index, 'credentialID', e.target.value)}
+        />
+      </div>
+      <div className="mb-3">
+        <label className="form-label">Credential URL</label>
+        <input
+          type="url"
+          className="form-control"
+          placeholder="Credential URL"
+          value={cert.credentialURL}
+          onChange={(e) => updateCertification(index, 'credentialURL', e.target.value)}
+        />
+      </div>
+    </div>
+  ))}
+  <button
+    type="button"
+    className="btn btn-primary"
+    onClick={addCertification}
+  >
+    <FaPlus className="me-2" />
+    Add Certification
+  </button>
+</div>
+
+
+      {/* intrest */}
+ 
+      <div className="mb-4">
+        <h2 className="h4">Interests</h2>
+        {data.interests.map((interest, index) => (
+          <div key={index} className="mb-3 border p-3 position-relative">
+            <button
+              type="button"
+              className="btn btn-danger position-absolute top-0 end-0 m-2"
+              onClick={() => removeInterest(index)}
+            >
+              <FaTrash />
+            </button>
+            <div className="mb-3">
+              <label className="form-label">Interest</label>
+              <input
+                type="text"
+                className="form-control"
+                placeholder="Interest"
+                value={interest}
+                onChange={(e) => updateInterest(index, e.target.value)}
+              />
+            </div>
+          </div>
+        ))}
+        <button
+          type="button"
+          className="btn btn-primary"
+          onClick={addInterest}
+        >
+          <FaPlus className="me-2" />
+          Add Interest
+        </button>
+      </div>
+      
       {/* Add more sections like Education, Skills, etc., following the same pattern */}
     </div>
+
   );
 };
-
 
 export default ResumeForm;
