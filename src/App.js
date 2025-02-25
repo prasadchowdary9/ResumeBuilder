@@ -74,7 +74,7 @@ function App() {
   <Route path="/widget" element={<JobWidget />} />
               {isLoggedIn ? (
                 <>
-                <Route path="/resume-import" element={<DropResume />} />
+                {/* <Route path="/resume-import" element={<DropResume />} /> */}
                 <Route path="/ats-score" element={<AtsScore />} />
                 <Route path="/resume-builder" element={<ResumeLayout />} />
                 <Route path="/applicanthome" element={<ApplicantHomePage />} />
@@ -92,6 +92,8 @@ function App() {
                 <Route path="/applicant-job-alerts" element={<ApplicantHomePage />} />
                 <Route path="/applicant-take-test" element={<ApplicantHomePage />} />
                 <Route path="/applicant-resume" element={<ApplicantHomePage />} />
+                <Route path="/resume-import" element={<ApplicantHomePage />} />
+
                 {/* <Route path="/verified-badges" component={VerifiedBadges} /> */}
                 <Route path="/applicant-verified-badges" element={<ApplicantHomePage />} />
                 <Route path="/applicant-resume-builder" element={<ApplicantHomePage />} />

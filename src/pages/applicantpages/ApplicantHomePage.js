@@ -22,8 +22,8 @@ import ApplicantBasicDetails from '../../components/applicantcomponents/Applican
 import ResumeBuilder from '../../components/applicantcomponents/ResumeBuilder';
 import ApplicantTakeTest from '../../components/applicantcomponents/ApplicantTakeTest';
 import VerifiedBadges from '../../components/applicantcomponents/VerifiedBadges';
-
-
+import DropResume from '../../components/applicantcomponents/DropResume';
+import ResumeLayout from '../../components/applicantcomponents/resumebuildercomponents/ResumeLayout';
 function ApplicantHomePage() {
   const [activeRoute, setActiveRoute] = useState('');
   const [selectedJobId, setSelectedJobId] = useState('');
@@ -104,6 +104,8 @@ function ApplicantHomePage() {
         break;
         case '/applicant-resume-builder':
           setActiveRoute('resumebuilder');
+          case '/resume-import':
+            setActiveRoute('resumeimport');
         break;
         case '/applicant-basic-details-form':
           setActiveRoute('abdf');
@@ -139,6 +141,7 @@ function ApplicantHomePage() {
      {activeRoute === 'deleteprofile' && <ApplicantDeleteProfile />}
      {activeRoute === 'jobalerts' && <ApplicantJobAlerts />}
      {activeRoute === 'resume' && <ApplicantResume />}
+      {activeRoute === 'resumeimport' && <DropResume />}
      {activeRoute === 'resumebuilder' && <ResumeBuilder />}
      {activeRoute === 'abdf' && <ApplicantBasicDetails />}
      {activeRoute === 'taketest' && <ApplicantTakeTest />}
