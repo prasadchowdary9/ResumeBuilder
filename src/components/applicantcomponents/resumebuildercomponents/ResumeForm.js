@@ -481,6 +481,34 @@ const removeInterest = (index) => {
                 }}
               />
             </div>
+            <div className="mb-3">
+              <label className="form-label">Start Date</label>
+              <input
+                type="date"
+                className="form-control"
+                placeholder="e.g. Jan 2020"
+                value={exp.startDate}
+                onChange={(e) => {
+                  const newExperience = [...data.experience];
+                  newExperience[index].startDate = e.target.value;
+                  onChange({ ...data, experience: newExperience });
+                }}
+              />
+            </div>
+            <div className="mb-3">
+              <label className="form-label">End Date</label>
+              <input
+                type="date"
+                className="form-control"
+                placeholder="e.g. Jan 2020"
+                value={exp.endDate}
+                onChange={(e) => {
+                  const newExperience = [...data.experience];
+                  newExperience[index].endDate = e.target.value;
+                  onChange({ ...data, experience: newExperience });
+                }}
+              />
+            </div>
             {/* Duration Field */}
             <div className="mb-3">
               <label className="form-label">Duration</label>
@@ -495,6 +523,19 @@ const removeInterest = (index) => {
                   onChange({ ...data, experience: newExperience });
                 }}
               />
+            </div>
+            <div className="mb-3">
+              <label className="form-label">Description</label>
+              <textarea
+                className="form-control"
+                placeholder="Describe your work experience"
+                rows="3"
+                value={exp.description}
+                onChange={(e) => {
+                  const newExperience = [...data.experience];
+                  newExperience[index].description = e.target.value;
+                  onChange({ ...data, experience: newExperience });
+                }}              />
             </div>
           </div>
         ))}
@@ -628,7 +669,17 @@ const removeInterest = (index) => {
               />
             </div>
             <div className="mb-3">
-              <label className="form-label">Graduation Date</label>
+              <label className="form-label">Graduation Start Date</label>
+              <input
+                type="text"
+                className="form-control"
+                placeholder="e.g., May 2024"
+                value={edu.graduationStartDate}
+                onChange={(e) => updateEducation(index, 'graduationStartDate', e.target.value)}
+              />
+            </div>
+            <div className="mb-3">
+              <label className="form-label">Graduation End Date</label>
               <input
                 type="text"
                 className="form-control"
