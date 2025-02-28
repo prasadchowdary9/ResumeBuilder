@@ -1,10 +1,9 @@
 
+
 import React from "react";
 import { FaPlus, FaTrash } from "react-icons/fa";
-
-import ResumeTemplateQueue from "./ResumeTemplateQueue";
 import { useUserContext } from "../../common/UserProvider";
-
+import ResumeTemplateQueue from "./ResumeTemplateQueue";
 
 const ResumeForm = ({ data, onChange }) => {
 
@@ -25,7 +24,42 @@ const ResumeForm = ({ data, onChange }) => {
     newEducation[index] = { ...newEducation[index], [field]: value };
     onChange({ ...data, education: newEducation });
   };
-
+  
+ 
+  const saveExperiences = async () => {
+    try {
+      // Retrieve user data from localStorage (or state)
+      const userData = JSON.parse(localStorage.getItem("user")); // Ensure user data is stored
+      const jwtToken = userData?.data?.jwt;
+      const userId = userData?.id;
+  
+      if (!jwtToken || !userId) {
+        console.error("User is not authenticated");
+        return;
+      }
+  
+      // Extract experiences dynamically from the form state
+      const experiences = data.experience;
+  
+      // Send API request
+      const response = await fetch(`http://192.168.86.29:8081/experience/saveExperiences/${userId}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${jwtToken}`, // Add JWT token
+        },
+        body: JSON.stringify(experiences),
+      });
+  
+      const result = await response.json();
+      console.log(result); // Should log: "All experiences saved successfully"
+    } catch (error) {
+      console.error("Error saving experiences:", error);
+    }
+  };
+  
+  
+  
   // Function to add a new education entry
   const addEducation = () => {
     const newEducation = [
@@ -313,16 +347,16 @@ const removeInterest = (index) => {
             <div className="mb-3">
               <label className="form-label">Position</label>
               <input
-                type="text"
-                className="form-control"
-                placeholder="Position"
-                value={exp.position}
-                onChange={(e) => {
-                  const newExperience = [...data.experience];
-                  newExperience[index].position = e.target.value;
-                  onChange({ ...data, experience: newExperience });
-                }}
-              />
+  type="text"
+  className="form-control"
+  placeholder="Position"
+  value={exp.jobTitle} // Change from `position` to `jobTitle`
+  onChange={(e) => {
+    const newExperience = [...data.experience];
+    newExperience[index].jobTitle = e.target.value; // Update field name
+    onChange({ ...data, experience: newExperience });
+  }}
+/>
             </div>
             <div className="mb-3">
               <label className="form-label">Start Date</label>
@@ -380,7 +414,12 @@ const removeInterest = (index) => {
                   onChange({ ...data, experience: newExperience });
                 }}              />
             </div>
+            <button className="btn btn-success mt-3" onClick={saveExperiences}>
+  Save Experiences
+</button>
+
           </div>
+          
         ))}
         <button
           type="button"
@@ -716,7 +755,7 @@ const removeInterest = (index) => {
 </div>
 
 
-      {/* intrest */}
+      {/* interest */}
  
       <div className="mb-4">
         <h2 className="h4">Interests</h2>
