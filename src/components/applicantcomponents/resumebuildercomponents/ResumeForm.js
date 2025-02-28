@@ -1,7 +1,10 @@
 
 import React from "react";
 import { FaPlus, FaTrash } from "react-icons/fa";
+
+import ResumeTemplateQueue from "./ResumeTemplateQueue";
 import { useUserContext } from "../../common/UserProvider";
+
 
 const ResumeForm = ({ data, onChange }) => {
 
@@ -746,6 +749,9 @@ const removeInterest = (index) => {
           <FaPlus className="me-2" />
           Add Interest
         </button>
+        <h6 className="mt-2">Choose Template</h6>
+        <ResumeTemplateQueue/>
+        
       </div>
       
       {/* Add more sections like Education, Skills, etc., following the same pattern */}
