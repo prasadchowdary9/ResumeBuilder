@@ -44,7 +44,7 @@ const ResumeTemplateQueue = () => {
             <Col key={index} md={4} className="d-flex justify-content-center">
               <div className="template-card position-relative">
                 {/* Template Card */}
-                <Card className="shadow-sm" style={{ width: "250px", height: "320px", borderRadius: "10px", overflow: "hidden" }}>
+                <Card className="shadow-sm" style={{ width: "250px", height: "290px", borderRadius: "10px", overflow: "hidden" }}>
                   <Card.Img src={image} className="template-img" />
 
                   {/* Hover Overlay */}

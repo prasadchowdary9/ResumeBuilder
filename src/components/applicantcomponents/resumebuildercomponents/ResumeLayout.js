@@ -123,6 +123,8 @@ import axios from "axios";
 import logos from '../../../images/logofinal.png';
 import { useNavigate } from "react-router-dom";
 
+import { Toast, ToastContainer } from "react-bootstrap";
+
 const initialResumeData = {
   personalInfo: {
     name: '',
@@ -150,46 +152,57 @@ const initialResumeData = {
 function ResumeLayout() {
   const [resumeData, setResumeData] = useState(initialResumeData);
   const navigate = useNavigate(); // Use navigation for redirecting
+  const [showToast, setShowToast] = useState(false);
+  const [toastMessage, setToastMessage] = useState("");
+  const [toastVariant, setToastVariant] = useState("success"); // success or danger
 
 
   const handleSaveOrUpload = async () => {
     try {
       console.log("Resume Data:", resumeData);
-  
+
       if (!resumeData || !resumeData.personalInfo || !resumeData.personalInfo.name) {
-        alert({ message: "Please fill in your personal details before saving.", type: "danger" });
+        setToastMessage("Please fill in your personal details before saving.");
+        setToastVariant("danger");
+        setShowToast(true);
         return;
       }
-  
+
       const fileName = `${resumeData.personalInfo.name.toLowerCase().replace(/\s+/g, "_")}_resume.pdf`;
-  
+
       // Convert Resume Preview to PDF for Upload (without downloading)
       const element = document.getElementById("resume-preview");
       const pdfBlob = await html2pdf().from(element).outputPdf("blob");
-  
+
       // Upload PDF to Backend
       const formData = new FormData();
-      formData.append("file", pdfBlob, fileName);
-  
-      const response = await axios.post(
-        "http://192.168.86.28:8081/upload?file",
-        formData,
-        { headers: { "Content-Type": "multipart/form-data" } }
-      );
-      if (response.status === 200) {
-        const uploadedFileUrl = response.data.fileUrl; // Get uploaded PDF URL
+      const pdfFile = new File([pdfBlob], fileName, { type: "application/pdf" });
+      console.log(fileName)
+formData.append("file", pdfFile);
 
-        // 3️⃣ Redirect to starting page with the uploaded file URL
-        navigate("/applicanthome", { state: { uploadedFileUrl } });
+
+const response = await fetch("http://localhost:8081/upload", {
+  method: "POST",
+  body: formData,
+});
+const result = await response.json();
+console.log(result);
+
+      if (response.status === 200) {
+        setToastMessage("Resume uploaded successfully!");
+        setToastVariant("success");
+        setShowToast(true);
+
+        // const uploadedFileUrl = response.data.fileUrl; // Get uploaded PDF URL
+        // navigate("/applicanthome", { state: { uploadedFileUrl } });
       }
-  
-      console.log("File uploaded successfully:", response.data);
-     
     } catch (error) {
       console.error("Error processing resume:", error);
-  alert({ message: "Failed to upload resume.", type: "danger" });
+      setToastMessage("Failed to upload resume.");
+      setToastVariant("danger");
+      setShowToast(true);
     }
-  };
+  }
   
   const handleDownloadPDF = async () => {
     if (!resumeData || !resumeData.personalInfo || !resumeData.personalInfo.name) {
@@ -240,6 +253,17 @@ function ResumeLayout() {
   <button onClick={handleSaveOrUpload} className="btn btn-primary">
      Save & Upload
   </button>
+
+      {/* Snackbar Notification at Bottom-Right */}
+      <ToastContainer
+        position="bottom-end"
+        className="p-3"
+        style={{ position: "fixed", bottom: "20px", right: "20px", zIndex: 1050 }}
+      >
+        <Toast bg={toastVariant} show={showToast} onClose={() => setShowToast(false)} delay={2000} autohide>
+          <Toast.Body className="text-white text-center">{toastMessage}</Toast.Body>
+        </Toast>
+      </ToastContainer>
   <button onClick={ handleDownloadPDF} className="btn btn-primary">
     Download PDF
   </button>
