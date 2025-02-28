@@ -291,6 +291,9 @@ const ResumePreview = ({ data }) => {
               {/* <p style={{ fontSize: '14px', margin: '5px 0' }}>
                 {exp.company} | {exp.startDate} - {exp.endDate}
               </p> */}
+                          <p style={{ fontSize: '14px', margin: '5px 0' }}>{exp.startDate}</p>
+                          <p style={{ fontSize: '14px', margin: '5px 0' }}>{exp.endDate}</p>
+
             <p style={{ fontSize: '14px', margin: '5px 0' }}>{exp.duration}</p>
 
               <p style={textStyle}>{exp.description}</p>
@@ -307,7 +310,7 @@ const ResumePreview = ({ data }) => {
             <div key={index} style={{ marginBottom: '15px' }}>
               <h3 style={{ fontSize: '16px', fontWeight: 'bold', margin: '0' }}>{edu.degree}</h3>
               <p style={{ fontSize: '14px', margin: '5px 0' }}>
-                {edu.school}, {edu.university} | {edu.graduationDate}
+                {edu.school}, {edu.university} |{edu.graduationStartDate} - {edu.graduationDate}
               </p>
               <p style={textStyle}>{edu.fieldOfStudy}</p>
               {edu.percentage && <p style={textStyle}>Percentage: {edu.percentage}</p>}
