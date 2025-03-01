@@ -19,7 +19,42 @@ const ResumeForm = ({ data, onChange }) => {
     newEducation[index] = { ...newEducation[index], [field]: value };
     onChange({ ...data, education: newEducation });
   };
-
+  
+ 
+  const saveExperiences = async () => {
+    try {
+      // Retrieve user data from localStorage (or state)
+      const userData = JSON.parse(localStorage.getItem("user")); // Ensure user data is stored
+      const jwtToken = userData?.data?.jwt;
+      const userId = userData?.id;
+  
+      if (!jwtToken || !userId) {
+        console.error("User is not authenticated");
+        return;
+      }
+  
+      // Extract experiences dynamically from the form state
+      const experiences = data.experience;
+  
+      // Send API request
+      const response = await fetch(`http://192.168.86.29:8081/experience/saveExperiences/${userId}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${jwtToken}`, // Add JWT token
+        },
+        body: JSON.stringify(experiences),
+      });
+  
+      const result = await response.json();
+      console.log(result); // Should log: "All experiences saved successfully"
+    } catch (error) {
+      console.error("Error saving experiences:", error);
+    }
+  };
+  
+  
+  
   // Function to add a new education entry
   const addEducation = () => {
     const newEducation = [
@@ -122,6 +157,49 @@ const removeInterest = (index) => {
   const newInterests = data.interests.filter((_, i) => i !== index);
   onChange({ ...data, interests: newInterests });
 };
+
+  // Function to save personal info using the API
+  const savePersonalInfo = async () => {
+    const { personalInfo } = data;
+
+    const payload = {
+      fullName: personalInfo.name,
+      email: personalInfo.email,
+      phoneNo: personalInfo.phone,
+      address: personalInfo.location,
+      linkedin: personalInfo.linkedin,
+      github: personalInfo.github,
+      website: personalInfo.website,
+      role: personalInfo.title,
+      summary: personalInfo.summary,
+    };
+
+    try {
+      const jwtToken = localStorage.getItem('jwtToken');
+      const response = await fetch(
+        `http://192.168.86.29:8082/personalInfo/savePersonalInfo/${applicantId}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${jwtToken}`,
+          },
+          body: JSON.stringify(payload),
+        }
+      );
+
+      if (response.ok) {
+        alert("Personal information saved successfully!");
+      } else {
+        const errorData = await response.json();
+        alert(`Failed to save personal information: ${errorData.message}`);
+      }
+    } catch (error) {
+      console.error("Error saving personal information:", error);
+      alert("An error occurred while saving personal information.");
+    }
+  };
+
 
   return (
     <div className="container row py-4">
@@ -288,6 +366,13 @@ const removeInterest = (index) => {
       />
     </div>
   </div>
+  <button
+          type="button"
+          className="btn btn-success mt-3"
+          onClick={savePersonalInfo}
+        >
+          Save Personal Information
+        </button>
 </div>
 
       {/* Experience Section */}
@@ -389,6 +474,10 @@ const removeInterest = (index) => {
                   onChange({ ...data, experience: newExperience });
                 }}              />
             </div>
+            <button className="btn btn-success mt-3" onClick={saveExperiences}>
+  Save Experiences
+</button>
+
           </div>
         ))}
         <button
@@ -523,7 +612,7 @@ const removeInterest = (index) => {
             <div className="mb-3">
               <label className="form-label">Graduation Start Date</label>
               <input
-                type="text"
+                type="date"
                 className="form-control"
                 placeholder="e.g., May 2024"
                 value={edu.graduationStartDate}
@@ -533,7 +622,7 @@ const removeInterest = (index) => {
             <div className="mb-3">
               <label className="form-label">Graduation End Date</label>
               <input
-                type="text"
+                type="date"
                 className="form-control"
                 placeholder="e.g., May 2024"
                 value={edu.graduationDate}
@@ -693,6 +782,24 @@ const removeInterest = (index) => {
           onChange={(e) => updateProject(index, 'link', e.target.value)}
         />
       </div>
+      <div className="mb-3">
+        <label className="form-label">Start Date</label>
+        <input
+          type="date"
+          className="form-control"
+          value={project.startDate}
+          onChange={(e) => updateProject(index, 'startDate', e.target.value)}
+        />
+      </div>
+      <div className="mb-3">
+        <label className="form-label">End Date</label>
+        <input
+          type="date"
+          className="form-control"
+          value={project.endDate}
+          onChange={(e) => updateProject(index, 'endDate', e.target.value)}
+        />
+      </div>
     </div>
   ))}
   <button
@@ -704,6 +811,7 @@ const removeInterest = (index) => {
     Add Project
   </button>
 </div>
+
 
 <div className="mb-4">
   <h2 className="h4">Certifications</h2>
@@ -820,6 +928,9 @@ const removeInterest = (index) => {
           <FaPlus className="me-2" />
           Add Interest
         </button>
+        <h6 className="mt-2">Choose Template</h6>
+        <ResumeTemplateQueue/>
+        
       </div>
       
       {/* Add more sections like Education, Skills, etc., following the same pattern */}
