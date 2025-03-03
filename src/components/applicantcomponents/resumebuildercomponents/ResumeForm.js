@@ -895,7 +895,9 @@ const removeInterest = (index) => {
         <h6 className="mt-2">Choose Template</h6>
         <ResumeTemplateQueue/>
          <button className="btn btn-success mt-3" onClick= {saveResume }>
-  Save Experiences
+
+  Save resume
+
 </button>
       </div>
       
