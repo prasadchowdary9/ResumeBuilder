@@ -1,13 +1,72 @@
 
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { FaPlus, FaTrash } from "react-icons/fa";
 import { useUserContext } from "../../common/UserProvider";
 import ResumeTemplateQueue from "./ResumeTemplateQueue";
-
+import { apiUrl } from "../../../services/ApplicantAPIService";
 const ResumeForm = ({ data, onChange }) => {
+  const [resumeData, setResumeData] = useState({});
+  const [loading, setLoading] = useState(true);
+  const [isEditing, setIsEditing] = useState(false);
+  const user = useUserContext()?.user;
 
-  const { user } = useUserContext();
+  useEffect(() => {
+    if (user?.id) {
+      fetchResumeData();
+    }
+  }, [user?.id]); // Depend only on `user?.id`
+
+  const fetchResumeData = async () => {
+    if (!user?.id) return;
+
+    setLoading(true);
+    try {
+      const jwtToken = localStorage.getItem("jwtToken");
+      const response = await fetch(`${apiUrl}/resume-builder/getResume/${user.id}`, {
+        headers: { Authorization: `Bearer ${jwtToken}` },
+      });
+
+      if (!response.ok) throw new Error(`Error: ${response.status}`);
+
+      const data = await response.json();
+      setResumeData(data.resumePersonalInfo || {});
+    } catch (error) {
+      console.error("Error fetching resume data:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleChange = (e) => {
+    setResumeData({ ...resumeData, [e.target.name]: e.target.value });
+  };
+
+  const handleSave = async () => {
+    try {
+      const jwtToken = localStorage.getItem("jwtToken");
+      const response = await fetch(`${apiUrl}/resume-builder/updateResume/${user.id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${jwtToken}`,
+        },
+        body: JSON.stringify(resumeData),
+      });
+
+      if (!response.ok) throw new Error(`Error: ${response.status}`);
+
+      await response.json();
+      setIsEditing(false);
+    } catch (error) {
+      console.error("Error updating resume:", error);
+    }
+  };
+
+  if (loading) return <p>Loading...</p>;
+  if (!resumeData) return <p>No resume data found.</p>;
+
+  // const { user } = useUserContext();
     const applicantId = user.id;
   const updatePersonalInfo = (field, value) => {
     onChange({
@@ -26,7 +85,7 @@ const ResumeForm = ({ data, onChange }) => {
   };
   
  
-  // const saveExperiences = async () => {
+  
   //   try {
   //     // Retrieve user data from localStorage (or state)
   //     const userData = JSON.parse(localStorage.getItem("user")); // Ensure user data is stored
@@ -163,7 +222,7 @@ const removeInterest = (index) => {
   onChange({ ...data, interests: newInterests });
 };
 
-  // Function to save personal info using the API
+  
   // const savePersonalInfo = async () => {
   //   const { personalInfo } = data;
 
@@ -302,7 +361,7 @@ const removeInterest = (index) => {
         type="text"
         className="form-control"
         placeholder="Full Name"
-        value={data.personalInfo.name}
+        value={data.personalInfo.name  || resumeData.fullName}
         onChange={(e) => updatePersonalInfo("name", e.target.value)}
       />
     </div>
@@ -312,7 +371,7 @@ const removeInterest = (index) => {
         type="text"
         className="form-control"
         placeholder="Professional Title"
-        value={data.personalInfo.title}
+        value={data.personalInfo.title|| resumeData.role}
         onChange={(e) => updatePersonalInfo("title", e.target.value)}
       />
     </div>
@@ -322,7 +381,7 @@ const removeInterest = (index) => {
         type="email"
         className="form-control"
         placeholder="Email"
-        value={data.personalInfo.email}
+        value={data.personalInfo.email|| resumeData.email}
         onChange={(e) => updatePersonalInfo("email", e.target.value)}
       />
     </div>
@@ -906,3 +965,215 @@ const removeInterest = (index) => {
 };
 
 export default ResumeForm;
+
+
+
+// import { useState, useEffect } from "react";
+
+// const ResumeForm = ({ applicantId }) => {
+//   const apiUrl = "your_api_base_url"; // Replace with your actual API URL
+
+//   // State for form data
+//   const [resumeData, setResumeData] = useState({
+//     fullName: "",
+//     email: "",
+//     phone: "",
+//     experience: "",
+//     education: "",
+//   });
+
+//   // State to control edit mode
+//   const [isEditing, setIsEditing] = useState(false);
+
+//   // Fetch resume data when the component loads
+//   useEffect(() => {
+//     fetch(`${apiUrl}/resume-builder/saveresume/${applicantId}`)
+//       .then((response) => response.json())
+//       .then((data) => {
+//         if (data) {
+//           setResumeData(data); // Populate form with API data
+//         }
+//       })
+//       .catch((error) => console.error("Error fetching resume:", error));
+//   }, [applicantId]);
+
+//   // Handle input changes
+//   const handleChange = (e) => {
+//     setResumeData({ ...resumeData, [e.target.name]: e.target.value });
+//   };
+
+//   // Save updated data (PUT request)
+//   const handleSave = () => {
+//     fetch(`${apiUrl}/resume-builder/saveresume/${applicantId}`, {
+//       method: "PUT",
+//       headers: {
+//         "Content-Type": "application/json",
+//       },
+//       body: JSON.stringify(resumeData),
+//     })
+//       .then((response) => response.json())
+//       .then((data) => {
+//         console.log("Resume updated:", data);
+//         setIsEditing(false); // Switch back to view mode
+//       })
+//       .catch((error) => console.error("Error updating resume:", error));
+//   };
+
+//   return (
+//     <div>
+//       <h2>Resume Form</h2>
+
+//       <form>
+//         <label>Full Name:</label>
+//         <input
+//           type="text"
+//           name="fullName"
+//           value={resumeData.fullName }
+//           onChange={handleChange}
+//           readOnly={!isEditing}
+//         />
+
+//         <label>Email:</label>
+//         <input
+//           type="email"
+//           name="email"
+//           value={resumeData.email}
+//           onChange={handleChange}
+//           readOnly={!isEditing}
+//         />
+
+//         <label>Phone:</label>
+//         <input
+//           type="tel"
+//           name="phone"
+//           value={resumeData.phone}
+//           onChange={handleChange}
+//           readOnly={!isEditing}
+//         />
+
+//         <label>Experience:</label>
+//         <input
+//           type="text"
+//           name="experience"
+//           value={resumeData.experience}
+//           onChange={handleChange}
+//           readOnly={!isEditing}
+//         />
+
+//         <label>Education:</label>
+//         <input
+//           type="text"
+//           name="education"
+//           value={resumeData.education}
+//           onChange={handleChange}
+//           readOnly={!isEditing}
+//         />
+//       </form>
+
+//       {/* Toggle between Edit and Save mode */}
+//       {isEditing ? (
+//         <button onClick={handleSave}>Save</button>
+//       ) : (
+//         <button onClick={() => setIsEditing(true)}>Edit</button>
+//       )}
+//     </div>
+//   );
+// };
+
+// export default ResumeForm;
+
+
+
+// import React, { useState, useEffect } from "react";
+// import { apiUrl } from "../../../services/ApplicantAPIService";
+// import { useUserContext } from "../../../components/common/UserProvider";
+
+// const ResumeForm = () => {
+//   const [resumeData, setResumeData] = useState(null);
+//   const [loading, setLoading] = useState(true);
+//   const [isEditing, setIsEditing] = useState(false);
+//   const user = useUserContext()?.user;
+
+//   useEffect(() => {
+//     if (user?.id) {
+//       fetchResumeData();
+//     }
+//   }, [user]);
+
+//   const fetchResumeData = async () => {
+//     try {
+//       if (!user?.id) return;
+//       setLoading(true);
+//       const jwtToken = localStorage.getItem("jwtToken");
+//       const response = await fetch(`${apiUrl}/resume-builder/getResume/${user.id}`, {
+//         headers: { Authorization: `Bearer ${jwtToken}` },
+//       });
+//       if (!response.ok) throw new Error(`Error: ${response.status}`);
+//       const data = await response.json();
+//       setResumeData(data.resumePersonalInfo || {});
+//     } catch (error) {
+//       console.error("Error fetching resume data:", error);
+//     } finally {
+//       setLoading(false);
+//     }
+//   };
+
+//   const handleChange = (e) => {
+//     setResumeData({ ...resumeData, [e.target.name]: e.target.value });
+//   };
+
+//   const handleSave = async () => {
+//     try {
+//       const jwtToken = localStorage.getItem("jwtToken");
+//       const response = await fetch(`${apiUrl}/resume-builder/updateResume/${user.id}`, {
+//         method: "PUT",
+//         headers: {
+//           "Content-Type": "application/json",
+//           Authorization: `Bearer ${jwtToken}`,
+//         },
+//         body: JSON.stringify(resumeData),
+//       });
+//       if (!response.ok) throw new Error(`Error: ${response.status}`);
+//       await response.json();
+//       setIsEditing(false);
+//     } catch (error) {
+//       console.error("Error updating resume:", error);
+//     }
+//   };
+
+//   if (loading) return <p>Loading...</p>;
+//   if (!resumeData) return <p>No resume data found.</p>;
+
+//   return (
+//     <div>
+//       <h2>Resume Form</h2>
+//       <form>
+//         <label>Full Name:</label>
+//         <input type="text" name="fullName" value={resumeData.fullName || ""} onChange={handleChange} />
+        
+//         <label>Email:</label>
+//         <input type="email" name="email" value={resumeData.email || ""} onChange={handleChange} />
+
+//         <label>Phone:</label>
+//         <input type="tel" name="phoneNo" value={resumeData.phoneNo || ""} onChange={handleChange}  />
+
+//         <label>Address:</label>
+//         <input type="text" name="address" value={resumeData.address || ""} onChange={handleChange} />
+
+//         <label>LinkedIn:</label>
+//         <input type="text" name="linkedin" value={resumeData.linkedin || ""} onChange={handleChange}  />
+//         <label>Title:</label>
+//         <input type="text" name="linkedin" value={resumeData.role || ""} onChange={handleChange}  />
+//       </form>
+
+//       {isEditing ? (
+//         <button onClick={handleSave}>Save</button>
+//       ) : (
+//         <button onClick={() => setIsEditing(true)}>Edit</button>
+//       )}
+//     </div>
+//   );
+// };
+
+// export default ResumeForm;
+
