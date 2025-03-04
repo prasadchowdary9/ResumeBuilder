@@ -56,6 +56,8 @@ const ApplicantResume = () => {
 
         setPdfUrl(url);
         setLoading(false);
+        setShowBanner(false);
+
         
       } else {
         console.error('Error fetching resume content:', response);

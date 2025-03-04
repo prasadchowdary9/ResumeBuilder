@@ -6,7 +6,10 @@ import { useUserContext } from "../../common/UserProvider";
 import ResumeTemplateQueue from "./ResumeTemplateQueue";
 import { apiUrl } from "../../../services/ApplicantAPIService";
 const ResumeForm = ({ data, onChange }) => {
-  const [resumeData, setResumeData] = useState({});
+const [resumeData, setResumeData] = useState({
+  resumePersonalInfo: {},
+  resumeExperiences: [], // Initialize as an empty array
+});
   const [loading, setLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
   const user = useUserContext()?.user;
@@ -30,13 +33,38 @@ const ResumeForm = ({ data, onChange }) => {
       if (!response.ok) throw new Error(`Error: ${response.status}`);
 
       const data = await response.json();
-      setResumeData(data.resumePersonalInfo || {});
+      setResumeData({
+        ...(data.resumePersonalInfo || {}), // Spread personal info
+        experiences: data.resumeExperiences || [], // Ensure experiences is always an array
+        educations: data.resumeEducations || [],
+        projects: data.resumeProjects || [],
+        certifications: data.resumeCertificates || [],
+        languages: data.resumeLanguages || [],
+        interests: data.resumeIntrests || [],
+        skills: data.resumeTechnicalSkills || [],
+        
+       
+      });
+      console.log(data.resumeExperiences);
+      console.log(data.resumeExperiences[0].company);
+
+
     } catch (error) {
       console.error("Error fetching resume data:", error);
     } finally {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    console.log("Updated resumeData:", resumeData);
+    console.log("Company:", resumeData.resumeExperiences?.[0]?.company);
+    console.log("Company:", resumeData.experiences?.[0]?.company);
+    console.log("Company:", resumeData.educations?.[0]?.college);
+
+
+  }, [resumeData]); // Runs every time resumeData updates
+  
 
   const handleChange = (e) => {
     setResumeData({ ...resumeData, [e.target.name]: e.target.value });
@@ -296,6 +324,9 @@ const removeInterest = (index) => {
           endDate: exp.endDate,
           description: exp.description,
         })),
+
+       
+          
         resumeEducations: data.education.map((edu) => ({
           college: edu.university,
           startYear: edu.graduationDate,
@@ -327,7 +358,7 @@ const removeInterest = (index) => {
       };
   
       // Send API request
-      const response = await fetch(`http://192.168.86.29:8081/resume-builder/saveresume/${applicantId}`, {
+      const response = await fetch(`${apiUrl}/resume-builder/saveresume/${applicantId}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -347,7 +378,8 @@ const removeInterest = (index) => {
       alert("An error occurred while saving the resume.");
     }
   };
-  
+  console.log(resumeData.resumeExperiences?.[1]?.company);
+
   return (
     <div className="container row py-4">
       {/* Personal Information */}
@@ -391,7 +423,7 @@ const removeInterest = (index) => {
         type="tel"
         className="form-control"
         placeholder="Phone"
-        value={data.personalInfo.phone}
+        value={data.personalInfo.phone|| resumeData.phoneNo}
         onChange={(e) => updatePersonalInfo("phone", e.target.value)}
       />
     </div>
@@ -401,7 +433,7 @@ const removeInterest = (index) => {
         type="text"
         className="form-control"
         placeholder="Location"
-        value={data.personalInfo.location}
+        value={data.personalInfo.location|| resumeData.address}
         onChange={(e) => updatePersonalInfo("location", e.target.value)}
       />
     </div>
@@ -411,7 +443,7 @@ const removeInterest = (index) => {
         className="form-control"
         placeholder="Professional Summary"
         rows="3"
-        value={data.personalInfo.summary}
+        value={data.personalInfo.summary|| resumeData.summary}
         onChange={(e) => updatePersonalInfo("summary", e.target.value)}
       />
     </div>
@@ -423,7 +455,7 @@ const removeInterest = (index) => {
         type="url"
         className="form-control"
         placeholder="LinkedIn URL"
-        value={data.personalInfo.linkedin}
+        value={data.personalInfo.linkedin|| resumeData.linkedin}
         onChange={(e) => updatePersonalInfo("linkedin", e.target.value)}
       />
     </div>
@@ -433,7 +465,7 @@ const removeInterest = (index) => {
         type="url"
         className="form-control"
         placeholder="GitHub URL"
-        value={data.personalInfo.github}
+        value={data.personalInfo.github|| resumeData.github}
         onChange={(e) => updatePersonalInfo("github", e.target.value)}
       />
     </div>
@@ -443,7 +475,7 @@ const removeInterest = (index) => {
         type="url"
         className="form-control"
         placeholder="Website URL"
-        value={data.personalInfo.website}
+        value={data.personalInfo.website|| resumeData.website}
         onChange={(e) => updatePersonalInfo("website", e.target.value)}
       />
     </div>
@@ -478,7 +510,12 @@ const removeInterest = (index) => {
                 type="text"
                 className="form-control"
                 placeholder="Company"
-                value={exp.company}
+                // value={exp.company || resumeData.resumeExperiences?.[0]?.company || ''}
+                value={exp.company ||resumeData.experiences?.[index]?.company || ''}
+
+
+               
+
                 onChange={(e) => {
                   const newExperience = [...data.experience];
                   newExperience[index].company = e.target.value;
@@ -492,7 +529,9 @@ const removeInterest = (index) => {
   type="text"
   className="form-control"
   placeholder="Position"
-  value={exp.jobTitle} // Change from `position` to `jobTitle`
+  value={exp.jobTitle
+    ||resumeData.experiences?.[index]?.jobTitle||""
+  } // Change from `position` to `jobTitle`
   onChange={(e) => {
     const newExperience = [...data.experience];
     newExperience[index].jobTitle = e.target.value; // Update field name
@@ -506,7 +545,7 @@ const removeInterest = (index) => {
                 type="date"
                 className="form-control"
                 placeholder="e.g. Jan 2020"
-                value={exp.startDate}
+                value={exp.startDate ||resumeData.experiences?.[index]?.startDate||""}
                 onChange={(e) => {
                   const newExperience = [...data.experience];
                   newExperience[index].startDate = e.target.value;
@@ -520,7 +559,7 @@ const removeInterest = (index) => {
                 type="date"
                 className="form-control"
                 placeholder="e.g. Jan 2020"
-                value={exp.endDate}
+                value={exp.endDate||resumeData.experiences?.[index]?.startDate||""}
                 onChange={(e) => {
                   const newExperience = [...data.experience];
                   newExperience[index].endDate = e.target.value;
@@ -535,7 +574,7 @@ const removeInterest = (index) => {
                 type="text"
                 className="form-control"
                 placeholder="e.g. Jan 2020 - Dec 2023"
-                value={exp.duration}
+                value={exp.duration||resumeData.experiences?.[index]?.duration||""}
                 onChange={(e) => {
                   const newExperience = [...data.experience];
                   newExperience[index].duration = e.target.value;
@@ -549,7 +588,7 @@ const removeInterest = (index) => {
                 className="form-control"
                 placeholder="Describe your work experience"
                 rows="3"
-                value={exp.description}
+                value={exp.description||resumeData.experiences?.[index]?.description||""}
                 onChange={(e) => {
                   const newExperience = [...data.experience];
                   newExperience[index].description = e.target.value;
@@ -596,7 +635,7 @@ const removeInterest = (index) => {
                 type="text"
                 className="form-control"
                 placeholder="University"
-                value={edu.university}
+                value={edu.university ||resumeData.educations?.[index]?.college|| ''}
                 onChange={(e) => updateEducation(index, 'university', e.target.value)}
               />
             </div>
@@ -606,7 +645,7 @@ const removeInterest = (index) => {
                 type="text"
                 className="form-control"
                 placeholder="School"
-                value={edu.school}
+                value={edu.school||resumeData.educations?.[index]?.school|| ''}
                 onChange={(e) => updateEducation(index, 'school', e.target.value)}
               />
             </div>
@@ -616,7 +655,7 @@ const removeInterest = (index) => {
                 type="text"
                 className="form-control"
                 placeholder="Degree"
-                value={edu.degree}
+                value={edu.degree ||resumeData.educations?.[index]?.standard|| ''}
                 onChange={(e) => updateEducation(index, 'degree', e.target.value)}
               />
             </div>
@@ -636,7 +675,7 @@ const removeInterest = (index) => {
                 type="date"
                 className="form-control"
                 placeholder="e.g., May 2024"
-                value={edu.graduationStartDate}
+                value={edu.graduationStartDate  ||resumeData.educations?.[index]?.startYear|| ''}
                 onChange={(e) => updateEducation(index, 'graduationStartDate', e.target.value)}
               />
             </div>
@@ -646,7 +685,7 @@ const removeInterest = (index) => {
                 type="date"
                 className="form-control"
                 placeholder="e.g., May 2024"
-                value={edu.graduationDate}
+                value={edu.graduationDate ||resumeData.educations?.[index]?.endYear|| ''}
                 onChange={(e) => updateEducation(index, 'graduationDate', e.target.value)}
               />
             </div>
@@ -656,7 +695,7 @@ const removeInterest = (index) => {
                 type="text"
                 className="form-control"
                 placeholder="e.g., 85%"
-                value={edu.percentage}
+                value={edu.percentage ||resumeData.educations?.[index]?.cgpa|| ''}
                 onChange={(e) => updateEducation(index, 'percentage', e.target.value)}
               />
             </div>
@@ -666,7 +705,7 @@ const removeInterest = (index) => {
                 className="form-control"
                 placeholder="Describe your studies, achievements, or relevant coursework"
                 rows="3"
-                value={edu.description}
+                value={edu.description ||resumeData.educations?.[index]?.description|| ''}
                 onChange={(e) => updateEducation(index, 'description', e.target.value)}
               />
             </div>
@@ -698,7 +737,7 @@ const removeInterest = (index) => {
                 type="text"
                 className="form-control"
                 placeholder="Skill"
-                value={skill}
+                value={skill ||resumeData.skills?.[index].technicalSkillName|| ''}
                 onChange={(e) => {const newSkills = [...data.skills];
                   newSkills[index] = e.target.value;
                   onChange({ ...data, skills: newSkills });}}
@@ -733,7 +772,7 @@ const removeInterest = (index) => {
                 type="text"
                 className="form-control"
                 placeholder="Language"
-                value={language}
+                value={language ||resumeData.languages?.[index].languageName|| ''}
                 onChange={(e) => updateLanguage(index, e.target.value)}
               />
             </div>
@@ -769,7 +808,7 @@ const removeInterest = (index) => {
           type="text"
           className="form-control"
           placeholder="Project Title"
-          value={project.title}
+          value={project.title ||resumeData.projects?.[index].title|| ''}
           onChange={(e) => updateProject(index, 'title', e.target.value)}
         />
       </div>
@@ -779,7 +818,7 @@ const removeInterest = (index) => {
           className="form-control"
           placeholder="Brief description of the project"
           rows="3"
-          value={project.description}
+          value={project.description  ||resumeData.projects?.[index].description|| ''}
           onChange={(e) => updateProject(index, 'description', e.target.value)}
         />
       </div>
@@ -789,7 +828,7 @@ const removeInterest = (index) => {
           type="text"
           className="form-control"
           placeholder="e.g., React, Node.js, MongoDB"
-          value={project.technologies}
+          value={project.technologies ||resumeData.projects?.[index].technologies|| ''}
           onChange={(e) => updateProject(index, 'technologies', e.target.value)}
         />
       </div>
@@ -799,7 +838,7 @@ const removeInterest = (index) => {
           type="url"
           className="form-control"
           placeholder="URL to the project or repository"
-          value={project.link}
+          value={project.link ||resumeData.projects?.[index].link|| ''}
           onChange={(e) => updateProject(index, 'link', e.target.value)}
         />
       </div>
@@ -808,7 +847,7 @@ const removeInterest = (index) => {
         <input
           type="date"
           className="form-control"
-          value={project.startDate}
+          value={project.startDate ||resumeData.projects?.[index].startDate|| ''}
           onChange={(e) => updateProject(index, 'startDate', e.target.value)}
         />
       </div>
@@ -817,7 +856,7 @@ const removeInterest = (index) => {
         <input
           type="date"
           className="form-control"
-          value={project.endDate}
+          value={project.endDate ||resumeData.projects?.[index].endDate|| ''}
           onChange={(e) => updateProject(index, 'endDate', e.target.value)}
         />
       </div>
@@ -851,7 +890,7 @@ const removeInterest = (index) => {
           type="text"
           className="form-control"
           placeholder="Certification Name"
-          value={cert.name}
+          value={cert.name ||resumeData.certifications?.[index].title|| ''}
           onChange={(e) => updateCertification(index, 'name', e.target.value)}
         />
       </div>
@@ -861,7 +900,7 @@ const removeInterest = (index) => {
           type="text"
           className="form-control"
           placeholder="Issuing Organization"
-          value={cert.issuingOrganization}
+          value={cert.issuingOrganization ||resumeData.certifications?.[index].issuedBy|| ''}
           onChange={(e) => updateCertification(index, 'issuingOrganization', e.target.value)}
         />
       </div>
@@ -870,7 +909,7 @@ const removeInterest = (index) => {
         <input
           type="date"
           className="form-control"
-          value={cert.issueDate}
+          value={cert.issueDate ||resumeData.certifications?.[index].startDate|| ''}
           onChange={(e) => updateCertification(index, 'issueDate', e.target.value)}
         />
       </div>
@@ -879,7 +918,7 @@ const removeInterest = (index) => {
         <input
           type="date"
           className="form-control"
-          value={cert.expirationDate}
+          value={cert.expirationDate ||resumeData.certifications?.[index].year|| ''}
           onChange={(e) => updateCertification(index, 'expirationDate', e.target.value)}
         />
       </div>
@@ -899,7 +938,7 @@ const removeInterest = (index) => {
           type="url"
           className="form-control"
           placeholder="Credential URL"
-          value={cert.credentialURL}
+          value={cert.credentialURL ||resumeData.certifications?.[index].credentialURL|| ''}
           onChange={(e) => updateCertification(index, 'credentialURL', e.target.value)}
         />
       </div>
@@ -935,7 +974,7 @@ const removeInterest = (index) => {
                 type="text"
                 className="form-control"
                 placeholder="Interest"
-                value={interest}
+                value={interest   ||resumeData.interests?.[index].intrest|| ''}
                 onChange={(e) => updateInterest(index, e.target.value)}
               />
             </div>
