@@ -7,8 +7,6 @@ import ResumeTemplateQueue from "./ResumeTemplateQueue";
 import { apiUrl } from "../../../services/ApplicantAPIService";
 const ResumeForm = ({ data, onChange }) => {
 const [resumeData, setResumeData] = useState({
-  resumePersonalInfo: {},
-  resumeExperiences: [], // Initialize as an empty array
 });
   const [loading, setLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
@@ -70,8 +68,56 @@ const [resumeData, setResumeData] = useState({
     setResumeData({ ...resumeData, [e.target.name]: e.target.value });
   };
 
+  // const handleSave = async () => {
+  //   try {
+  //     const jwtToken = localStorage.getItem("jwtToken");
+  //     const response = await fetch(`${apiUrl}/resume-builder/updateResume/${user.id}`, {
+  //       method: "PUT",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //         Authorization: `Bearer ${jwtToken}`,
+  //       },
+  //       body: JSON.stringify(resumeData),
+  //     });
+
+  //     if (!response.ok) throw new Error(`Error: ${response.status}`);
+
+  //     await response.json();
+  //     setIsEditing(false);
+  //   } catch (error) {
+  //     console.error("Error updating resume:", error);
+  //   }
+  // };
+  const fetchUpdatedResume = async () => {
+    try {
+      const jwtToken = localStorage.getItem("jwtToken");
+      const response = await fetch(`${apiUrl}/resume-builder/getResume/${user.id}`, {
+        headers: {
+          Authorization: `Bearer ${jwtToken}`,
+        },
+      });
+
+      if (!response.ok) throw new Error(`Error: ${response.status}`);
+
+      const updatedResume = await response.json();
+      console.log("Updated Resume Data:", updatedResume); // Debugging
+      setResumeData(updatedResume);
+    } catch (error) {
+      console.error("Error fetching updated resume:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchUpdatedResume();
+  }, [user.id]); // Fetch data when component mounts
+
+  // Handle field updates
+
+  // Save updated resume data
   const handleSave = async () => {
     try {
+      console.log("Data before saving:", resumeData); // Debugging
+
       const jwtToken = localStorage.getItem("jwtToken");
       const response = await fetch(`${apiUrl}/resume-builder/updateResume/${user.id}`, {
         method: "PUT",
@@ -82,14 +128,20 @@ const [resumeData, setResumeData] = useState({
         body: JSON.stringify(resumeData),
       });
 
+      const responseData = await response.json();
+      console.log("API response after update:", responseData); // Debugging
+
       if (!response.ok) throw new Error(`Error: ${response.status}`);
 
-      await response.json();
       setIsEditing(false);
+      fetchUpdatedResume(); // Fetch the latest data
     } catch (error) {
       console.error("Error updating resume:", error);
     }
   };
+
+  
+  
 
   if (loading) return <p>Loading...</p>;
   if (!resumeData) return <p>No resume data found.</p>;
@@ -380,6 +432,10 @@ const removeInterest = (index) => {
   };
   console.log(resumeData.resumeExperiences?.[1]?.company);
 
+
+
+  
+
   return (
     <div className="container row py-4">
       {/* Personal Information */}
@@ -559,7 +615,7 @@ const removeInterest = (index) => {
                 type="date"
                 className="form-control"
                 placeholder="e.g. Jan 2020"
-                value={exp.endDate||resumeData.experiences?.[index]?.startDate||""}
+                value={exp.endDate||resumeData.experiences?.[index]?.endDate||""}
                 onChange={(e) => {
                   const newExperience = [...data.experience];
                   newExperience[index].endDate = e.target.value;
@@ -974,7 +1030,7 @@ const removeInterest = (index) => {
                 type="text"
                 className="form-control"
                 placeholder="Interest"
-                value={interest   ||resumeData.interests?.[index].intrest|| ''}
+                value={interest  ||resumeData.interests?.[index].intrest|| ''}
                 onChange={(e) => updateInterest(index, e.target.value)}
               />
             </div>
@@ -992,7 +1048,7 @@ const removeInterest = (index) => {
 
         <h6 className="mt-2">Choose Template</h6>
         <ResumeTemplateQueue/>
-         <button className="btn btn-success mt-3" onClick= {saveResume }>
+         <button className="btn btn-success mt-3" onClick= {isEditing? handleSave:saveResume }>
 
   Save resume
 
