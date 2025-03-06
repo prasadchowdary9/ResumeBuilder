@@ -45,7 +45,7 @@ const [resumeData, setResumeData] = useState({});
         certifications: data.resumeCertificates || [],
         languages: data.resumeLanguages || [],
         interests: data.resumeIntrests || [],
-        skills: data.resumeTechnicalSkills || [],
+        skills: data.resumeSkills || [],
         
        
       });
@@ -151,20 +151,21 @@ const [resumeData, setResumeData] = useState({});
           {data.education.map((edu, index) => (
             <div key={index} className="mb-4">
               <div className="d-flex justify-content-between align-items-baseline">
-                <h3 className="h5 text-dark">{edu.degree|| resumeData.educations[index]?.college}
+                {/* <h3 className="h5 text-dark">
+                  {edu.degree|| resumeData.educations[index]?.college|| ""}
                 <br/>
                 <br/>
                 {edu.standard ||resumeData.educations?.[index]?.standard|| ''}
-                </h3>
+                </h3> */}
          
                 <p className="h5 text-dark"></p>
 
                 
                 <div className=' row'>
-                <p className="text-secondary">{edu.graduationStartDate  ||resumeData.educations[index]?.startYear}</p>
-                <p className="text-secondary">{edu.graduationDate  ||resumeData.educations[index]?.endYear}</p>
+                {/* <p className="text-secondary">{edu.graduationStartDate  ||resumeData.educations[index]?.startYear}</p> */}
+                {/* <p className="text-secondary">{edu.graduationDate  ||resumeData.educations[index]?.endYear}</p>
 
-                <p className="text-secondary">{edu.percentage   ||resumeData.educations[index]?.cgpa}</p>
+                <p className="text-secondary">{edu.percentage   ||resumeData.educations[index]?.cgpa}</p> */}
                 </div>
 
               </div>
@@ -190,7 +191,7 @@ const [resumeData, setResumeData] = useState({});
                 key={index}
                 className="badge bg-light text-dark"
               >
-                {skill ||resumeData.skills?.[index].technicalSkillName|| ''}
+                {skill ||resumeData.skills?.[index].technicalSkills|| ''}
               </span>
             ))}
           </div>
