@@ -15,11 +15,7 @@ const ResumeForm = ({data, onChange}) => {
       summary: "",
       role: "",
     },
-    resumeSkills: {
-      technicalSkills: [
-
-      ],
-    },
+    resumeSkills: { technicalSkills: [] },
     resumeExperiences: [
       {
         company:"",
@@ -39,11 +35,29 @@ const ResumeForm = ({data, onChange}) => {
         startYear: "",
       }
     ],
-        resumeProjects: [],
-    resumeCertificates: [],
-    resumeLanguages: [],
-    resumeIntrest: { intrests: [] },
-  });
+    resumeProjects: [
+      {
+        title: "",
+        description: "",
+        startDate: "",
+        endDate: "Present",
+        link: "",
+      }
+    ],    
+      resumeCertificates: [  // Added resumeCertificates here
+      {
+        title: "",
+        issuedBy: "",
+        year: "",
+      }
+    ],
+    resumeLanguages: [
+      { languageName: "" }
+    ],
+    resumeIntrest: {
+      intrests: [""], 
+    },
+   });
 
   const [isEditing, setIsEditing] = useState(false);
   const user = useUserContext()?.user;
@@ -252,99 +266,208 @@ const ResumeForm = ({data, onChange}) => {
     }));
   };
 
+// Function to update project details
+const updateProject = (index, field, value) => {
+  setResumeData((prev) => {
+    const newProjects = [...prev.resumeProjects];
+    newProjects[index] = { ...newProjects[index], [field]: value };
 
-  //// Function to update project details
-  const updateProject = (index, updatedProject) => {
-    setResumeData((prevData) => {
-      const newProjects = prevData.resumeProjects.map((project, i) =>
-        i === index ? { ...project, ...updatedProject } : project
-      );
-      return { ...prevData, resumeProjects: newProjects };
-    });
-  };
+    const updatedData = { ...prev, resumeProjects: newProjects };
+    onChange(updatedData); // Notify parent
+    return updatedData;
+  });
+};
 
-
-  // Function to add a new project entry
-  const addProject = () => {
+// Function to add a new project entry
+const addProject = () => {
+  setResumeData((prev) => {
     const newProjects = [
-      ...resumeData.resumeProjects,
-      { title: '', description: '', startDate: '', endDate: '', link: '' },
+      ...prev.resumeProjects,
+      { title: '', description: '', startDate: '', endDate: 'Present', link: '' },
     ];
-    setResumeData({ ...resumeData, resumeProjects: newProjects }); // Ensure the key matches the state
-  };
 
-  // Function to remove a project entry
-  const removeProject = (index) => {
-    const newProjects = resumeData.resumeProjects.filter((_, i) => i !== index);
-    setResumeData({ ...resumeData, resumeProjects: newProjects }); // Correct the key here too
-  };
+    const updatedData = { ...prev, resumeProjects: newProjects };
+    onChange(updatedData); // Notify parent
+    return updatedData;
+  });
+};
+
+// Function to remove a project entry
+const removeProject = (index) => {
+  setResumeData((prev) => {
+    const updatedProjects = prev.resumeProjects.filter((_, i) => i !== index);
+
+    const updatedData = { ...prev, resumeProjects: updatedProjects };
+    onChange(updatedData); // Notify parent
+    return updatedData;
+  });
+};
 
 
-  // Function to update certification details
-  const updateCertification = (index, field, value) => {
-    const newCertifications = [...resumeData.resumeCertificates];
+
+// Function to update certification details
+const updateCertification = (index, field, value) => {
+  setResumeData((prev) => {
+    const newCertifications = [...prev.resumeCertificates];
     newCertifications[index] = { ...newCertifications[index], [field]: value };
 
-    setResumeData((prev) => ({
-      ...prev,
-      resumeCertificates: newCertifications,
-    }));
-  };
+    const updatedData = { ...prev, resumeCertificates: newCertifications };
+    onChange(updatedData); // Notify parent
+    return updatedData;
+  });
+};
 
-  // Function to add a new certification entry
-  const addCertification = () => {
+// Function to add a new certification entry
+const addCertification = () => {
+  setResumeData((prev) => {
     const newCertifications = [
-      ...(resumeData.resumeCertificates || []), // Ensure it's an array
+      ...(prev.resumeCertificates || []), // Ensure it's an array
       { title: '', issuedBy: '', year: '' },
     ];
 
-    setResumeData((prev) => ({
+    const updatedData = { ...prev, resumeCertificates: newCertifications };
+    onChange(updatedData); // Notify parent
+    return updatedData;
+  });
+};
+
+// Function to remove a certification entry
+const removeCertification = (index) => {
+  setResumeData((prev) => {
+    const newCertifications = prev.resumeCertificates.filter((_, i) => i !== index);
+
+    const updatedData = { ...prev, resumeCertificates: newCertifications };
+    onChange(updatedData); // Notify parent
+    return updatedData;
+  });
+};
+const addSkill = () => {
+  setResumeData((prev) => {
+    const updatedData = {
       ...prev,
-      resumeCertificates: newCertifications,
-    }));
-  };
+      resumeSkills: {
+        ...prev.resumeSkills,
+        technicalSkills: [...prev.resumeSkills.technicalSkills, ""],
+      },
+    };
+    onChange(updatedData); // Notify parent
+    return updatedData;
+  });
+};
 
-  // Function to remove a certification entry
-  const removeCertification = (index) => {
-    const newCertifications = resumeData.resumeCertificates.filter((_, i) => i !== index);
-
-    setResumeData((prev) => ({
+const removeSkill = (index) => {
+  setResumeData((prev) => {
+    const updatedSkills = prev.resumeSkills.technicalSkills.filter((_, i) => i !== index);
+    const updatedData = {
       ...prev,
-      resumeCertificates: newCertifications,
-    }));
-  };
+      resumeSkills: {
+        ...prev.resumeSkills,
+        technicalSkills: updatedSkills,
+      },
+    };
+    onChange(updatedData); // Notify parent
+    return updatedData;
+  });
+};
 
-
-
-
-
-  const updateLanguage = (index, value) => {
-    const updatedLanguages = [...resumeData.resumeLanguages];
-    updatedLanguages[index].languageName = value;
-
-    setResumeData((prev) => ({
+const updateSkill = (index, value) => {
+  setResumeData((prev) => {
+    const updatedSkills = [...prev.resumeSkills.technicalSkills];
+    updatedSkills[index] = value;
+    const updatedData = {
       ...prev,
-      resumeLanguages: updatedLanguages,
-    }));
-  };
+      resumeSkills: {
+        ...prev.resumeSkills,
+        technicalSkills: updatedSkills,
+      },
+    };
+    onChange(updatedData); // Notify parent
+    return updatedData;
+  });
+};
 
-  const addNewLanguage = () => {
-    setResumeData((prev) => ({
+
+  
+
+const updateLanguage = (index, value) => {
+  setResumeData((prev) => {
+    const updatedLanguages = [...prev.resumeLanguages]; // Copy existing languages
+    updatedLanguages[index] = { languageName: value }; // Update the language at the specified index
+
+    // Create the updated data object
+    const updatedData = {
       ...prev,
-      resumeLanguages: [...(prev.resumeLanguages || []), { languageName: "" }],
-    }));
-  };
+      resumeLanguages: updatedLanguages, // Update resumeLanguages in the state
+    };
+
+    // Notify parent component (if necessary)
+    onChange(updatedData); // Assuming onChange is passed as a prop to notify parent
+
+    return updatedData; // Return the updated state
+  });
+};
 
 
 
-  const removeLanguage = (index) => {
-    const updatedLanguages = resumeData.resumeLanguages.filter((_, i) => i !== index);
+// Function to add a new language entry
+const addLanguage = () => {
+  setResumeData((prev) => ({
+    ...prev,
+    resumeLanguages: [...prev.resumeLanguages, { languageName: "" }], // Add a new empty language
+  }));
+};
 
-    setResumeData((prev) => ({
+// Function to remove a language entry
+const removeLanguage = (index) => {
+  setResumeData((prev) => {
+    const updatedLanguages = prev.resumeLanguages.filter((_, i) => i !== index); // Remove language by index
+    return { ...prev, resumeLanguages: updatedLanguages }; // Return the updated state
+  });
+};
+const updateInterest = (index, value) => {
+  setResumeData((prev) => {
+    const updatedInterests = [...prev.resumeIntrest.intrests];
+    updatedInterests[index] = value; // Update the specific interest
+
+    // Creating the updated data object
+    const updatedData = {
       ...prev,
-      resumeLanguages: updatedLanguages,
-    }));
-  };
+      resumeIntrest: {
+        ...prev.resumeIntrest,
+        intrests: updatedInterests,
+      },
+    };
+
+    // Notify parent component (if necessary)
+    onChange(updatedData); // Assuming onChange is passed as a prop to notify parent
+
+    return updatedData; // Return the updated state
+  });
+};
+
+
+const addInterest = () => {
+  setResumeData((prev) => ({
+    ...prev,
+    resumeIntrest: {
+      ...prev.resumeIntrest,
+      intrests: [...(prev.resumeIntrest.intrests || []), ""],
+    },
+  }));
+};
+
+const removeInterest = (index) => {
+  setResumeData((prev) => {
+    const updatedInterests = prev.resumeIntrest.intrests.filter((_, i) => i !== index);
+    return {
+      ...prev,
+      resumeIntrest: {
+        ...prev.resumeIntrest,
+        intrests: updatedInterests,
+      },
+    };
+  });
+};
 
 
   return (
@@ -612,131 +735,108 @@ const ResumeForm = ({data, onChange}) => {
       {/* Skills Section */}
 
       <div className="mb-4">
-        <h2 className="h4">Skills</h2>
-        {resumeData.resumeSkills?.technicalSkills?.map((skill, index) => (
-          <div key={index} className="mb-3 border p-3 position-relative">
-            <button
-              type="button"
-              className="btn btn-danger position-absolute top-0 end-0 m-2"
-              onClick={() => {
-                const newSkills = resumeData.resumeSkills.technicalSkills.filter((_, i) => i !== index);
-                setResumeData((prev) => ({
-                  ...prev,
-                  resumeSkills: { ...prev.resumeSkills, technicalSkills: newSkills },
-                }));
-              }}
-            >
-              <FaTrash />
-            </button>
-            <div className="mb-3">
-              <label className="form-label">Skill</label>
-              <input
-                type="text"
-                className="form-control"
-                placeholder="Enter skill"
-                value={skill || ""}
-                onChange={(e) => {
-                  const newSkills = [...resumeData.resumeSkills.technicalSkills];
-                  newSkills[index] = e.target.value;
-                  setResumeData((prev) => ({
-                    ...prev,
-                    resumeSkills: { ...prev.resumeSkills, technicalSkills: newSkills },
-                  }));
-                }}
-              />
-            </div>
-          </div>
-        ))}
-        <button
-          type="button"
-          className="btn btn-primary"
-          onClick={() => {
-            const newSkills = [...(resumeData.resumeSkills?.technicalSkills || []), ""];
-            setResumeData((prev) => ({
-              ...prev,
-              resumeSkills: { ...prev.resumeSkills, technicalSkills: newSkills },
-            }));
-          }}
-        >
-          <FaPlus className="me-2" />
-          Add Skill
-        </button>
+  <h2 className="h4">Skills</h2>
+  {resumeData.resumeSkills?.technicalSkills?.map((skill, index) => (
+    <div key={index} className="mb-3 border p-3 position-relative">
+      {/* Remove Skill Button */}
+      <button
+        type="button"
+        className="btn btn-danger position-absolute top-0 end-0 m-2"
+        onClick={() => removeSkill(index)}
+      >
+        <FaTrash />
+      </button>
+
+      {/* Skill Input Field */}
+      <div className="mb-3">
+        <label className="form-label">Skill</label>
+        <input
+          type="text"
+          className="form-control"
+          placeholder="Enter skill"
+          value={skill || ""} // 🔥 Ensure skill is a string
+          onChange={(e) => updateSkill(index, e.target.value)}
+        />
       </div>
+    </div>
+  ))}
+
+  {/* Add Skill Button */}
+  <button type="button" className="btn btn-primary" onClick={addSkill}>
+    <FaPlus className="me-2" />
+    Add Skill
+  </button>
+</div>
 
 
-      {/* <div className="mb-4">
-        <h2 className="h4">Projects</h2>
-        {resumeData.resumeProjects.map((projects, index) => (
-          <div key={index} className="mb-3 border p-3 position-relative">
-            <button
-              type="button"
-              className="btn btn-danger position-absolute top-0 end-0 m-2"
-              onClick={() => removeProject(index)}
-            >
-              <FaTrash />
-            </button>
-            <div className="mb-3">
-              <label className="form-label">Project Title</label>
-              <input
-                type="text"
-                className="form-control"
-                placeholder="Project Title"
-                value={projects.title}
-                onChange={(e) => updateProject(index, { title: e.target.value })}
-              />
-            </div>
-            <div className="mb-3">
-              <label className="form-label">Description</label>
-              <textarea
-                className="form-control"
-                placeholder="Brief description of the project"
-                rows="3"
-                value={projects.description}
-                onChange={(e) => updateProject(index, { description: e.target.value })}
-
-              />
-            </div>
-            <div className="mb-3">
-              <label className="form-label">Project Link</label>
-              <input
-                type="url"
-                className="form-control"
-                placeholder="URL to the project or repository"
-                value={projects.link}
-                onChange={(e) => updateProject(index, { link: e.target.value })}
-
-              />
-            </div>
-            <div className="mb-3">
-              <label className="form-label">Start Date</label>
-              <input
-                type="date"
-                className="form-control"
-                value={projects.startDate}
-                onChange={(e) => updateProject(index, { startDate: e.target.value })}
-
-              />
-            </div>
-            <div className="mb-3">
-              <label className="form-label">End Date</label>
-              <input
-                type="date"
-                className="form-control"
-                value={projects.endDate}
-                onChange={(e) => updateProject(index, { endDate: e.target.value })}
-
-              />
-            </div>
-          </div>
-        ))}
-        <button type="button" className="btn btn-primary" onClick={addProject}>
-          <FaPlus className="me-2" />
-          Add Project
-        </button>
-      </div> */}
+    <div className="mb-4">
+  <h2 className="h4">Projects</h2>
+  {resumeData.resumeProjects.map((project, index) => (
+    <div key={index} className="mb-3 border p-3 position-relative">
+      <button
+        type="button"
+        className="btn btn-danger position-absolute top-0 end-0 m-2"
+        onClick={() => removeProject(index)}
+      >
+        <FaTrash />
+      </button>
+      <div className="mb-3">
+        <label className="form-label">Project Title</label>
+        <input
+          type="text"
+          className="form-control"
+          placeholder="Project Title"
+          value={project.title}
+          onChange={(e) => updateProject(index, "title", e.target.value)}
+        />
+      </div>
+      <div className="mb-3">
+        <label className="form-label">Description</label>
+        <textarea
+          className="form-control"
+          placeholder="Brief description of the project"
+          rows="3"
+          value={project.description}
+          onChange={(e) => updateProject(index, "description", e.target.value)}
+        />
+      </div>
+      <div className="mb-3">
+        <label className="form-label">Project Link</label>
+        <input
+          type="url"
+          className="form-control"
+          placeholder="URL to the project or repository"
+          value={project.link}
+          onChange={(e) => updateProject(index, "link", e.target.value)}
+        />
+      </div>
+      <div className="mb-3">
+        <label className="form-label">Start Date</label>
+        <input
+          type="date"
+          className="form-control"
+          value={project.startDate}
+          onChange={(e) => updateProject(index, "startDate", e.target.value)}
+        />
+      </div>
+      <div className="mb-3">
+        <label className="form-label">End Date</label>
+        <input
+          type="date"
+          className="form-control"
+          value={project.endDate}
+          onChange={(e) => updateProject(index, "endDate", e.target.value)}
+        />
+      </div>
+    </div>
+  ))}
+  <button type="button" className="btn btn-primary" onClick={addProject}>
+    <FaPlus className="me-2" />
+    Add Project
+  </button>
+</div>
 
       {/* certificates */}
-{/* 
       <div className="mb-4">
         <h2 className="h4">Certifications</h2>
         {resumeData.resumeCertificates.map((cert, index) => (
@@ -791,106 +891,99 @@ const ResumeForm = ({data, onChange}) => {
           Add Certification
         </button>
       </div>
+ 
+      
 
 
 
       <div className="mb-4">
-        <h2 className="h4">Languages</h2>
+  <h2 className="h4">Languages</h2>
 
-        {resumeData.resumeLanguages?.map((language, index) => (
-          <div key={index} className="mb-3 border p-3 position-relative">
-            <button
-              type="button"
-              className="btn btn-danger position-absolute top-0 end-0 m-2"
-              onClick={() => removeLanguage(index)}
-            >
-              <FaTrash />
-            </button>
+  {resumeData.resumeLanguages?.map((language, index) => (
+    <div key={index} className="mb-3 border p-3 position-relative">
+      {/* Remove Language Button */}
+      <button
+        type="button"
+        className="btn btn-danger position-absolute top-0 end-0 m-2"
+        onClick={() => removeLanguage(index)}
+      >
+        <FaTrash />
+      </button>
 
-            <div className="mb-3">
-              <label className="form-label">Language</label>
-              <input
-                type="text"
-                className="form-control"
-                placeholder="Enter Language"
-                value={language.languageName || ""}
-                onChange={(e) => updateLanguage(index, e.target.value)}
-              />
-            </div>
-          </div>
-        ))}
+      {/* Language Input Field */}
+      <div className="mb-3">
+        <label className="form-label">Language</label>
+        <input
+          type="text"
+          className="form-control"
+          placeholder="Enter Language"
+          value={language.languageName || ""}
+          onChange={(e) => updateLanguage(index, e.target.value)}
+        />
+      </div>
+    </div>
+  ))}
+
+  {/* Add Language Button */}
+  <button type="button" className="btn btn-primary" onClick={addLanguage}>
+    <FaPlus className="me-2" />
+    Add Language
+  </button>
+</div>
+
+
+ 
+
+<div className="mb-4">
+  <h2 className="h4">Interests</h2>
+
+  {/* Interest Input Field */}
+  {resumeData.resumeIntrest?.intrests?.length > 0 && resumeData.resumeIntrest.intrests.map((interest, index) => (
+    <div key={index} className="mb-3 border p-3 position-relative">
+      {/* Remove Interest Button */}
+      <button
+        type="button"
+        className="btn btn-danger position-absolute top-0 end-0 m-2"
+        onClick={() => removeInterest(index)}
+      >
+        <FaTrash />
+      </button>
+
+      {/* Interest Input Field */}
+      <div className="mb-3">
+        <label className="form-label">Interest</label>
+        <input
+          type="text"
+          className="form-control"
+          placeholder="Enter interest"
+          value={interest || ""}
+          onChange={(e) => updateInterest(index, e.target.value)}
+        />
+      </div>
+    </div>
+  ))}
+
+  {/* Add Interest Button */}
   <button
-          type="button"
-          className="btn btn-primary"
-          onClick={addNewLanguage}
-        >
-          <FaPlus className="me-2" />
-          Add Language
-        </button>
-      </div>
- */}
+    type="button"
+    className="btn btn-primary"
+    onClick={addInterest}
+  >
+    <FaPlus className="me-2" />
+    Add Interest
+  </button>
+
+  {/* Choose Template */}
+  <h6 className="mt-2">Choose Template</h6>
+  <ResumeTemplateQueue />
+
+  {/* Save Resume Button */}
+  <button className="btn btn-success mt-3" onClick={saveResumeData}>
+    Save Resume
+  </button>
+</div>
 
 
-      <div className="mb-4">
-        <h2 className="h4">Interests</h2>
-        {/* {resumeData.resumeIntrest?.intrests?.map((interest, index) => (
-          <div key={index} className="mb-3 border p-3 position-relative">
-            <button
-              type="button"
-              className="btn btn-danger position-absolute top-0 end-0 m-2"
-              onClick={() => {
-                const newInterests = resumeData.resumeIntrest.intrests.filter((_, i) => i !== index);
-                setResumeData((prev) => ({
-                  ...prev,
-                  resumeIntrest: { ...prev.resumeIntrest, intrests: newInterests },
-                }));
-              }}
-            >
-              <FaTrash />
-            </button>
-            <div className="mb-3">
-              <label className="form-label">Interest</label>
-              <input
-                type="text"
-                className="form-control"
-                placeholder="Enter interest"
-                value={resumeData.resumeIntrest?.intrests?.[index] || ""}
-                onChange={(e) => {
-                  const newInterests = [...resumeData.resumeIntrest.intrests];
-                  newInterests[index] = e.target.value;
-                  setResumeData((prev) => ({
-                    ...prev,
-                    resumeIntrest: { ...prev.resumeIntrest, intrests: newInterests },
-                  }));
-                }}
-              />
-
-            </div>
-          </div>
-        ))} */}
-
-        <button
-          type="button"
-          className="btn btn-primary"
-          onClick={() => {
-            const newInterests = [...(resumeData.resumeIntrest?.intrests || []), ""];
-            setResumeData((prev) => ({
-              ...prev,
-              resumeIntrest: { ...prev.resumeIntrest, intrests: newInterests },
-            }));
-          }}
-        >
-          <FaPlus className="me-2" />
-          Add Interest
-        </button>
-
-        <h6 className="mt-2">Choose Template</h6>
-        <ResumeTemplateQueue />
-
-        <button className="btn btn-success mt-3" onClick={saveResumeData}>
-          Save Resume
-        </button>
-      </div>
 
       {/* Add more sections like Education, Skills, etc., following the same pattern */}
     </div>

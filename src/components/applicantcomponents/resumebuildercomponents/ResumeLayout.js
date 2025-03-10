@@ -39,12 +39,26 @@ const initialResumeData = {
       startYear: "",
     }
   ],
-  skills: [],
-  projects: [],
-  certifications: [],
-  languages: [],
-  interests: [],
-  customSections: [],
+  resumeSkills: { technicalSkills: [] },
+  resumeProjects: [
+    {
+      title: "",
+      description: "",
+      startDate: "",
+      endDate: "Present",
+      link: "",
+    }
+  ],  
+  resumeCertificates: [  // Added resumeCertificates here
+    {
+      title: "",
+      issuedBy: "",
+      year: "",
+    }
+  ],
+  resumeLanguages: [
+    { languageName: "" }
+  ],  resumeIntrest: { intrests: [""] },  customSections: [],
   style: {
     primaryColor: '#3B82F6',
     fontFamily: 'Inter, sans-serif',

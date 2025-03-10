@@ -354,7 +354,7 @@
 
 
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { FiMail, FiPhone, FiMapPin } from 'react-icons/fi';
 import { apiUrl } from '../../../services/ApplicantAPIService';
 import { useUserContext } from "../../common/UserProvider";
@@ -370,15 +370,14 @@ export const ResumePreview = ({ data  }) => {
       summary: "",
       role: "",
     },
-    resumeSkills: {
-      technicalSkills: [],
-    },
+    resumeSkills: { technicalSkills: [] },
     resumeExperiences: [],
     resumeEducations: [],
     resumeProjects: [],
     resumeCertificates: [],
-    resumeLanguages: [],
-    resumeIntrest: { intrests: [] },
+    resumeLanguages: [
+      { languageName: "" }
+    ],    resumeIntrest: { intrests: [] },
   });
 
   const user = useUserContext()?.user;
@@ -436,6 +435,7 @@ export const ResumePreview = ({ data  }) => {
 
   useEffect(() => {
     console.log("Updated data:", data);
+
   }, [data]);
 
   // useEffect(() => {
@@ -487,14 +487,46 @@ export const ResumePreview = ({ data  }) => {
         resumeEducations: data.resumeEducations?.map((edu) => ({
           cgpa: edu.cgpa || "",
           standard: edu.standard || "",
-          startYear: edu.starYear || "",
+          startYear: edu.startYear || "",
           endYear: edu.endYear || "Present",
           college: edu.college || "",
         })) || [],
+     
+
+
+        resumeProjects: data.resumeProjects?.map((project) => ({
+          title: project.title || "",
+          description: project.description || "",
+          startDate: project.startDate || "",
+          endDate: project.endDate || "Present",
+          link: project.link || "",
+        })) || [],
+
+        resumeCertificates: data.resumeCertificates?.map((certificate) => ({
+          title: certificate.title || "",
+          issuedBy: certificate.issuedBy || "",
+          year: certificate.year || "",
+        })) || [],
+        resumeSkills: {
+          technicalSkills: data.resumeSkills?.technicalSkills?.map(skill => 
+            skill || "" // Extracts the skill name, ensuring it's a string
+          ) || []
+        },
+        
+
+        resumeLanguages: data.resumeLanguages?.map(lang => 
+          ({ languageName: lang.languageName || "" }) // Ensures correct structure for each language
+        ) || [],
+        
+        
+        
+        resumeIntrest: {
+          intrests: data?.resumeIntrest?.intrests?.map((interest) => interest) || [],
+        },
       }));
     }
   }, [data]);
-  
+
   return (
     <div id="resume-preview" className="bg-white p-4 shadow h-100" style={{ color: primaryColor }}>
       <div className="text-center mb-4">
@@ -565,17 +597,71 @@ export const ResumePreview = ({ data  }) => {
         </div>
       )}
 
+{resumeData?.resumeSkills?.technicalSkills?.length > 0 && (
+  <div className={sectionClass}>
+    <h2 className="h4 text-dark">Technical Skills</h2>
+    <ul>
+      {resumeData.resumeSkills.technicalSkills.map((skill, index) => (
+        <li key={index}>{skill}</li> 
+        // Since skill is already a string, no need for extra checks
+      ))}
+    </ul>
+  </div>
+)}
 
-{resumeData.resumeSkills?.technicalSkills?.length > 0 && (
+
+
+{resumeData.resumeProjects?.length > 0 && (
         <div className={sectionClass}>
-          <h2 className="h4 text-dark">Technical Skills</h2>
-          <ul>
-            {resumeData.resumeSkills.technicalSkills.map((skill, index) => (
-              <li key={index}>{skill}</li>
-            ))}
-          </ul>
+          <h2 className="h4 text-dark">Projects</h2>
+          {resumeData.resumeProjects.map((project, index) => (
+            <div key={index} className="mb-3">
+              <h3 className="h5">Title: {project.title}</h3>
+              <p>Description :{project.description}</p>
+              <p> Duration : {project.startDate} - {project.endDate}</p>
+              <p>Projectlink: {project.link}</p>
+
+            </div>
+          ))}
         </div>
       )}
+{resumeData.resumeCertificates?.length > 0 && (
+        <div className={sectionClass}>
+          <h2 className="h4 text-dark">Certificates</h2>
+          {resumeData.resumeCertificates.map((certificate, index) => (
+            <div key={index} className="mb-3">
+              <h3 className="h5">Title: {certificate.title}</h3>
+              <p className="text-secondary"> Issuedby :{certificate.issuedBy}</p>
+              <p>Date of Issued{certificate.year}</p>
+            </div>
+          ))}
+        </div>
+      )}
+
+
+
+{resumeData?.resumeLanguages?.length > 0 && (
+  <div className={sectionClass}>
+    <h2 className="h4 text-dark">Languages</h2>
+    <ul>
+      {resumeData.resumeLanguages.map((language, index) => (
+        <li key={index}>{language.languageName}</li> // Displaying language name
+      ))}
+    </ul>
+  </div>
+)}
+
+{resumeData?.resumeIntrest?.intrests?.length > 0 && (
+  <div className={sectionClass}>
+    <h2 className="h4 text-dark">Interests</h2>
+    <ul>
+      {resumeData.resumeIntrest.intrests.map((interest, index) => (
+        <li key={index}>{interest}</li> // Mapping and displaying each interest
+      ))}
+    </ul>
+  </div>
+)}
+
 
       {/* {resumeData.resumePersonalInfo.summary && (
         <div className={sectionClass}>
@@ -584,65 +670,8 @@ export const ResumePreview = ({ data  }) => {
         </div>
       )}
 
-      
-
-
-    
-
-      {resumeData.resumeProjects?.length > 0 && (
-        <div className={sectionClass}>
-          <h2 className="h4 text-dark">Projects</h2>
-          {resumeData.resumeProjects.map((project, index) => (
-            <div key={index} className="mb-3">
-              <h3 className="h5">{project.title}</h3>
-              <p>{project.description}</p>
-              <p>{project.startDate} - {project.endDate}</p>
-              {project.link && (
-                <p>
-                  <a href={project.link} target="_blank" rel="noopener noreferrer">
-                    Project Link
-                  </a>
-                </p>
-              )}
-            </div>
-          ))}
-        </div>
-      )}
-
-      {resumeData.resumeCertificates?.length > 0 && (
-        <div className={sectionClass}>
-          <h2 className="h4 text-dark">Certificates</h2>
-          {resumeData.resumeCertificates.map((certificate, index) => (
-            <div key={index} className="mb-3">
-              <h3 className="h5">{certificate.title}</h3>
-              <p className="text-secondary">{certificate.issuedBy}</p>
-              <p>{certificate.year}</p>
-            </div>
-          ))}
-        </div>
-      )}
-
-      {resumeData.resumeLanguages?.length > 0 && (
-        <div className={sectionClass}>
-          <h2 className="h4 text-dark">Languages</h2>
-          <ul>
-            {resumeData.resumeLanguages.map((language, index) => (
-              <li key={index}>{language.languageName}</li>
-            ))}
-          </ul>
-        </div>
-      )}
-
-      {resumeData.resumeIntrest?.intrests?.length > 0 && (
-        <div className={sectionClass}>
-          <h2 className="h4 text-dark">Interests</h2>
-          <ul>
-            {resumeData.resumeIntrest.intrests.map((interest, index) => (
-              <li key={index}>{interest}</li>
-            ))}
-          </ul>
-        </div>
-      )} */}
+     
+ */}
     </div>
   );
 };
