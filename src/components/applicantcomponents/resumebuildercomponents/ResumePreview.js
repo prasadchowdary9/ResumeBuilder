@@ -358,7 +358,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { FiMail, FiPhone, FiMapPin } from 'react-icons/fi';
 import { apiUrl } from '../../../services/ApplicantAPIService';
 import { useUserContext } from "../../common/UserProvider";
-
+import "./ResumePreview.css"
 export const ResumePreview = ({ data  }) => {
   const [loading, setLoading] = useState(true);
   const [resumeData, setResumeData] = useState({
@@ -528,153 +528,316 @@ export const ResumePreview = ({ data  }) => {
   }, [data]);
 
   return (
-    <div id="resume-preview" className="bg-white p-4 shadow h-100" style={{ color: primaryColor }}>
-      <div className="text-center mb-4">
+
+<div id="resume-preview" className="bg-white p-4 shadow h-100" style={{ color: primaryColor }}>
+  <div className="page-section">
+    <div className="text-center mb-4">
+      {resumeData?.resumePersonalInfo?.fullName || data?.resumePersonalInfo?.fullName ? (
         <h1 className="display-4 text-dark">
-          {resumeData?.resumePersonalInfo?.fullName  ||  data?.resumePersonalInfo?.fullName  }
+          {resumeData?.resumePersonalInfo?.fullName || data?.resumePersonalInfo?.fullName}
         </h1>
+      ) : null}
+
+      {resumeData?.resumePersonalInfo?.role || data?.resumePersonalInfo?.role ? (
         <p className="h5 text-secondary mt-2">
-          {resumeData?.resumePersonalInfo?.role ||  data?.resumePersonalInfo?.role}
+          {resumeData?.resumePersonalInfo?.role || data?.resumePersonalInfo?.role}
         </p>
-        <div className="d-flex justify-content-center gap-3 mt-3 text-secondary">
+      ) : null}
+
+      <div className="d-flex justify-content-center gap-3 mt-3 text-secondary">
+        {resumeData?.resumePersonalInfo?.email && (
           <div className="d-flex align-items-center gap-1">
             <FiMail size={16} />
-            <span>{resumeData?.resumePersonalInfo?.email ||  data?.resumePersonalInfo?.email}</span>
+            <span>{resumeData.resumePersonalInfo.email}</span>
           </div>
+        )}
+        {resumeData?.resumePersonalInfo?.phoneNo && (
           <div className="d-flex align-items-center gap-1">
             <FiPhone size={16} />
-            <span>{ resumeData?.resumePersonalInfo?.phoneNo ||  data?.resumePersonalInfo?.phoneNo }</span>
+            <span>{resumeData.resumePersonalInfo.phoneNo}</span>
           </div>
+        )}
+        {resumeData?.resumePersonalInfo?.address && (
           <div className="d-flex align-items-center gap-1">
             <FiMapPin size={16} />
-            <span>{resumeData?.resumePersonalInfo?.address || data?.resumePersonalInfo?.address }</span>
+            <span>{resumeData.resumePersonalInfo.address}</span>
           </div>
-
-          
-        </div>
-        <div className="d-flex align-items-center gap-1 p-2">
-          <p className="h6 text-dark">LinkedIn :  { resumeData?.resumePersonalInfo?.linkedin ||  data?.resumePersonalInfo?.linkedin}
-          </p>
-          <p className="h6 text-dark pl-6">GitHub :  { resumeData?.resumePersonalInfo?.github ||  data?.resumePersonalInfo?.github}
-          </p>
-
-          <p className="h6 text-dark pl-6">personalwebsite :  { resumeData?.resumePersonalInfo?.website ||  data?.resumePersonalInfo?.website}
-          </p>
-        </div>
-        <div className={sectionClass}>
-          <h2 className="h4 text-dark">Summary</h2>
-          <p>{ resumeData?.resumePersonalInfo?.summary ||  data?.resumePersonalInfo?.summary}</p>
-        </div>
-
-       
+        )}
       </div>
-{/* experience section */}
-      {resumeData?.resumeExperiences?.length > 0 && (
-  <div className={sectionClass}>
-    <h2 className="h4 text-dark">Experience</h2>
-    {resumeData.resumeExperiences.map((experience, index) => (
-      <div key={index} className="mb-3">
-        <h3 className="h5">Position: {experience.jobTitle || "N/A"}</h3>
-        <p className="text-secondary">Company: {experience.company || "N/A"}</p>
-        <p>Startdate: {experience.startDate} - EnDate {experience.endDate}</p>
-        <p>Description: {experience.description || "No description provided."}</p>
+
+      <div className="d-flex align-items-center gap-3 p-2">
+        {resumeData?.resumePersonalInfo?.linkedin && (
+          <p className="h6 text-dark">{resumeData.resumePersonalInfo.linkedin}</p>
+        )}
+        {resumeData?.resumePersonalInfo?.github && (
+          <p className="h6 text-dark">{resumeData.resumePersonalInfo.github}</p>
+        )}
+        {resumeData?.resumePersonalInfo?.website && (
+          <p className="h6 text-dark">{resumeData.resumePersonalInfo.website}</p>
+        )}
       </div>
-    ))}
-  </div>
-)}
-{/* Education section */}
-{resumeData.resumeEducations?.length > 0 && (
-        <div className={sectionClass}>
-          <h2 className="h4 text-dark">Education</h2>
-          {resumeData.resumeEducations.map((education, index) => (
-            <div key={index} className="mb-3">
-              <h3 className="h5">College:{education.college}</h3>
-              <p className="text-secondary">Field of  Study{education.standard}</p>
-              <p>Duration: {education.startYear} - {education.endYear}</p>
-              <p>CGPA: {education.cgpa}</p>
-            </div>
-          ))}
-        </div>
-      )}
 
-{resumeData?.resumeSkills?.technicalSkills?.length > 0 && (
-  <div className={sectionClass}>
-    <h2 className="h4 text-dark">Technical Skills</h2>
-    <ul>
-      {resumeData.resumeSkills.technicalSkills.map((skill, index) => (
-        <li key={index}>{skill}</li> 
-        // Since skill is already a string, no need for extra checks
-      ))}
-    </ul>
-  </div>
-)}
-
-
-
-{resumeData.resumeProjects?.length > 0 && (
-        <div className={sectionClass}>
-          <h2 className="h4 text-dark">Projects</h2>
-          {resumeData.resumeProjects.map((project, index) => (
-            <div key={index} className="mb-3">
-              <h3 className="h5">Title: {project.title}</h3>
-              <p>Description :{project.description}</p>
-              <p> Duration : {project.startDate} - {project.endDate}</p>
-              <p>Projectlink: {project.link}</p>
-
-            </div>
-          ))}
-        </div>
-      )}
-{resumeData.resumeCertificates?.length > 0 && (
-        <div className={sectionClass}>
-          <h2 className="h4 text-dark">Certificates</h2>
-          {resumeData.resumeCertificates.map((certificate, index) => (
-            <div key={index} className="mb-3">
-              <h3 className="h5">Title: {certificate.title}</h3>
-              <p className="text-secondary"> Issuedby :{certificate.issuedBy}</p>
-              <p>Date of Issued{certificate.year}</p>
-            </div>
-          ))}
-        </div>
-      )}
-
-
-
-{resumeData?.resumeLanguages?.length > 0 && (
-  <div className={sectionClass}>
-    <h2 className="h4 text-dark">Languages</h2>
-    <ul>
-      {resumeData.resumeLanguages.map((language, index) => (
-        <li key={index}>{language.languageName}</li> // Displaying language name
-      ))}
-    </ul>
-  </div>
-)}
-
-{resumeData?.resumeIntrest?.intrests?.length > 0 && (
-  <div className={sectionClass}>
-    <h2 className="h4 text-dark">Interests</h2>
-    <ul>
-      {resumeData.resumeIntrest.intrests.map((interest, index) => (
-        <li key={index}>{interest}</li> // Mapping and displaying each interest
-      ))}
-    </ul>
-  </div>
-)}
-
-
-      {/* {resumeData.resumePersonalInfo.summary && (
+      {resumeData?.resumePersonalInfo?.summary && (
         <div className={sectionClass}>
           <h2 className="h4 text-dark">Summary</h2>
           <p>{resumeData.resumePersonalInfo.summary}</p>
         </div>
       )}
-
-     
- */}
     </div>
+
+    {/* Experience Section */}
+    {resumeData?.resumeExperiences?.length > 0 && (
+      <div className={sectionClass}>
+        {resumeData.resumeExperiences.map((experience, index) => (
+          
+          <div key={index} className="mb-3">
+           {experience.company &&          <h2 className="h4 text-dark">Experience</h2>}
+
+            {experience.jobTitle && <h3 className="h5">Position: {experience.jobTitle}</h3>}
+            {experience.company && <p className="text-secondary">Company: {experience.company}</p>}
+            {experience.startDate && experience.endDate && (
+              <p>Start Date: {experience.startDate} - End Date: {experience.endDate}</p>
+            )}
+            {experience.description && <p>Description: {experience.description}</p>}
+          </div>
+        ))}
+      </div>
+    )}
+
+    <div className="page-break"></div> {/* Page Break */}
+
+    {/* Education Section */}
+    {resumeData.resumeEducations?.length > 0 && (
+      <div className={sectionClass}>
+        <h2 className="h4 text-dark">Education</h2>
+        {resumeData.resumeEducations.map((education, index) => (
+          <div key={index} className="mb-3">
+            {education.college && <h3 className="h5">College: {education.college}</h3>}
+            {education.standard && <p className="text-secondary">Field of Study: {education.standard}</p>}
+            {education.startYear && education.endYear && (
+              <p>Duration: {education.startYear} - {education.endYear}</p>
+            )}
+            {education.cgpa && <p>CGPA: {education.cgpa}</p>}
+          </div>
+        ))}
+      </div>
+    )}
+  </div>
+
+  <div className="page-break"></div> {/* Page Break */}
+
+  {/* Second Page Content */}
+  <div className="page-section">
+    {resumeData?.resumeSkills?.technicalSkills?.length > 0 && (
+      <div className={sectionClass}>
+        <h2 className="h4 text-dark">Technical Skills</h2>
+        <ul>
+          {resumeData.resumeSkills.technicalSkills.map((skill, index) => (
+            <li key={index}>{skill}</li>
+          ))}
+        </ul>
+      </div>
+    )}
+
+    {resumeData.resumeProjects?.length > 0 && (
+      <div className={sectionClass}>
+        <h2 className="h4 text-dark">Projects</h2>
+        {resumeData.resumeProjects.map((project, index) => (
+          <div key={index} className="mb-3">
+            {project.title && <h3 className="h5">Title: {project.title}</h3>}
+            {project.description && <p>Description: {project.description}</p>}
+            {project.startDate && project.endDate && (
+              <p>Duration: {project.startDate} - {project.endDate}</p>
+            )}
+            {project.link && <p>Project Link: {project.link}</p>}
+          </div>
+        ))}
+      </div>
+    )}
+
+    {resumeData.resumeCertificates?.length > 0 && (
+      <div className={sectionClass}>
+        <h2 className="h4 text-dark">Certificates</h2>
+        {resumeData.resumeCertificates.map((certificate, index) => (
+          <div key={index} className="mb-3">
+            {certificate.title && <h3 className="h5">Title: {certificate.title}</h3>}
+            {certificate.issuedBy && <p className="text-secondary">Issued by: {certificate.issuedBy}</p>}
+            {certificate.year && <p>Date of Issue: {certificate.year}</p>}
+          </div>
+        ))}
+      </div>
+    )}
+
+    {resumeData?.resumeLanguages?.length > 0 && (
+      <div className={sectionClass}>
+        <h2 className="h4 text-dark">Languages</h2>
+        <ul>
+          {resumeData.resumeLanguages.map((language, index) => (
+            <li key={index}>{language.languageName}</li>
+          ))}
+        </ul>
+      </div>
+    )}
+
+    {resumeData?.resumeIntrest?.intrests?.length > 0 && (
+      <div className={sectionClass}>
+        <h2 className="h4 text-dark">Interests</h2>
+        <ul>
+          {resumeData.resumeIntrest.intrests.map((interest, index) => (
+            <li key={index}>{interest}</li>
+          ))}
+        </ul>
+      </div>
+    )}
+  </div>
+</div>
+
+
   );
 };
 
 
 export default ResumePreview
+
+
+
+
+//     <div id="resume-preview" className="bg-white p-4 shadow h-100" style={{ color: primaryColor }}>
+//       <div className="text-center mb-4">
+//         <h1 className="display-4 text-dark">
+//           {resumeData?.resumePersonalInfo?.fullName  ||  data?.resumePersonalInfo?.fullName  }
+//         </h1>
+//         <p className="h5 text-secondary mt-2">
+//           {resumeData?.resumePersonalInfo?.role ||  data?.resumePersonalInfo?.role}
+//         </p>
+//         <div className="d-flex justify-content-center gap-3 mt-3 text-secondary">
+//           <div className="d-flex align-items-center gap-1">
+//             <FiMail size={16} />
+//             <span>{resumeData?.resumePersonalInfo?.email ||  data?.resumePersonalInfo?.email}</span>
+//           </div>
+//           <div className="d-flex align-items-center gap-1">
+//             <FiPhone size={16} />
+//             <span>{ resumeData?.resumePersonalInfo?.phoneNo ||  data?.resumePersonalInfo?.phoneNo }</span>
+//           </div>
+//           <div className="d-flex align-items-center gap-1">
+//             <FiMapPin size={16} />
+//             <span>{resumeData?.resumePersonalInfo?.address || data?.resumePersonalInfo?.address }</span>
+//           </div>
+
+          
+//         </div>
+//         <div className="d-flex align-items-center gap-1 p-2">
+//           <p className="h6 text-dark"> { resumeData?.resumePersonalInfo?.linkedin ||  data?.resumePersonalInfo?.linkedin}
+//           </p>
+//           <p className="h6 text-dark pl-6">  { resumeData?.resumePersonalInfo?.github ||  data?.resumePersonalInfo?.github}
+//           </p>
+
+//           <p className="h6 text-dark pl-6"> { resumeData?.resumePersonalInfo?.website ||  data?.resumePersonalInfo?.website}
+//           </p>
+//         </div>
+//         <div className={sectionClass}>
+//           <h2 className="h4 text-dark"></h2>
+//           <p>{ resumeData?.resumePersonalInfo?.summary ||  data?.resumePersonalInfo?.summary}</p>
+//         </div>
+
+       
+//       </div>
+// {/* experience section */}
+//       {resumeData?.resumeExperiences?.length > 0 && (
+//   <div className={sectionClass}>
+//     <h2 className="h4 text-dark">Experience</h2>
+//     {resumeData.resumeExperiences.map((experience, index) => (
+//       <div key={index} className="mb-3">
+//         <h3 className="h5">Position: {experience.jobTitle || "N/A"}</h3>
+//         <p className="text-secondary">Company: {experience.company || "N/A"}</p>
+//         <p>Startdate: {experience.startDate} - EnDate {experience.endDate}</p>
+//         <p>Description: {experience.description || "No description provided."}</p>
+//       </div>
+//     ))}
+//   </div>
+// )}
+// {/* Education section */}
+// {resumeData.resumeEducations?.length > 0 && (
+//         <div className={sectionClass}>
+//           <h2 className="h4 text-dark">Education</h2>
+//           {resumeData.resumeEducations.map((education, index) => (
+//             <div key={index} className="mb-3">
+//               <h3 className="h5">College:{education.college}</h3>
+//               <p className="text-secondary">Field of  Study{education.standard}</p>
+//               <p>Duration: {education.startYear} - {education.endYear}</p>
+//               <p>CGPA: {education.cgpa}</p>
+//             </div>
+//           ))}
+//         </div>
+//       )}
+
+// {resumeData?.resumeSkills?.technicalSkills?.length > 0 && (
+//   <div className={sectionClass}>
+//     <h2 className="h4 text-dark">Technical Skills</h2>
+//     <ul>
+//       {resumeData.resumeSkills.technicalSkills.map((skill, index) => (
+//         <li key={index}>{skill}</li> 
+//         // Since skill is already a string, no need for extra checks
+//       ))}
+//     </ul>
+//   </div>
+// )}
+
+
+
+// {resumeData.resumeProjects?.length > 0 && (
+//         <div className={sectionClass}>
+//           <h2 className="h4 text-dark">Projects</h2>
+//           {resumeData.resumeProjects.map((project, index) => (
+//             <div key={index} className="mb-3">
+//               <h3 className="h5">Title: {project.title}</h3>
+//               <p>Description :{project.description}</p>
+//               <p> Duration : {project.startDate} - {project.endDate}</p>
+//               <p>Projectlink: {project.link}</p>
+
+//             </div>
+//           ))}
+//         </div>
+//       )}
+      
+// {resumeData.resumeCertificates?.length > 0 && (
+//         <div className={sectionClass}>
+//           <h2 className="h4 text-dark">Certificates</h2>
+//           {resumeData.resumeCertificates.map((certificate, index) => (
+//             <div key={index} className="mb-3">
+//               <h3 className="h5">Title: {certificate.title}</h3>
+//               <p className="text-secondary"> Issuedby :{certificate.issuedBy}</p>
+//               <p>Date of Issued{certificate.year}</p>
+//             </div>
+//           ))}
+//         </div>
+//       )}
+
+
+
+// {resumeData?.resumeLanguages?.length > 0 && (
+//   <div className={sectionClass}>
+//     <h2 className="h4 text-dark">Languages</h2>
+//     <ul>
+//       {resumeData.resumeLanguages.map((language, index) => (
+//         <li key={index}>{language.languageName}</li> // Displaying language name
+//       ))}
+//     </ul>
+//   </div>
+// )}
+
+// {resumeData?.resumeIntrest?.intrests?.length > 0 && (
+//   <div className={sectionClass}>
+//     <h2 className="h4 text-dark">Interests</h2>
+//     <ul>
+//       {resumeData.resumeIntrest.intrests.map((interest, index) => (
+//         <li key={index}>{interest}</li> // Mapping and displaying each interest
+//       ))}
+//     </ul>
+    
+//   </div>
+  
+// )}
+
+
+//     </div>

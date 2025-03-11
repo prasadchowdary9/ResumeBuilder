@@ -1,0 +1,45 @@
+/* @media print {
+    body {
+      -webkit-print-color-adjust: exact;
+    }
+  
+    #resume-preview {
+      width: 210mm;
+      min-height: 297mm;
+      padding: 20mm;
+      box-shadow: none;
+    }
+  
+    .page-break {
+      page-break-before: always;
+    }
+  } */
+  
+  .page-section {
+    overflow: visible !important;
+  }
+
+
+
+
+  #resume-preview {
+    width: 100%;
+    overflow: hidden;
+  }
+  
+  .page-break {
+    page-break-before: always;
+    display: block;
+    height: 10px; /* Ensure proper spacing */
+  }
+  
+  
+  @media print {
+    .page-section {
+      page-break-before: always; /* Ensures new sections start on a new page */
+    }
+    .page-break {
+      page-break-after: always; /* Forces a new page after this element */
+    }
+  }
+  

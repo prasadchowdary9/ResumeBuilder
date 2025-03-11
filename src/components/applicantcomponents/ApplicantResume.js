@@ -71,7 +71,7 @@ const ApplicantResume = () => {
   const fetchResumeContent = async () => {
     try {
       const jwtToken = localStorage.getItem('jwtToken');
-      const response = await fetch(`${apiUrl}/resume-builder/getResume/${user.id}`, {
+      const response = await fetch(`http://192.168.86.235:8081/resume/pdf/${user.id}`, {
         headers: {
           Authorization: `Bearer ${jwtToken}`,
         },
