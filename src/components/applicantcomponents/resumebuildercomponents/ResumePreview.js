@@ -579,7 +579,7 @@ export const ResumePreview = ({ data  }) => {
 
       {resumeData?.resumePersonalInfo?.summary && (
         <div className={sectionClass}>
-          <h2 className="h4 text-dark">Summary</h2>
+          <h3 className="h4 text-dark">Summary</h3>
           <p>{resumeData.resumePersonalInfo.summary}</p>
         </div>
       )}
@@ -591,7 +591,7 @@ export const ResumePreview = ({ data  }) => {
         {resumeData.resumeExperiences.map((experience, index) => (
           
           <div key={index} className="mb-3">
-           {experience.company &&          <h2 className="h4 text-dark">Experience</h2>}
+           {experience.company &&          <h3 className="h4 text-dark">Experience</h3>}
 
             {experience.jobTitle && <h3 className="h5">Position: {experience.jobTitle}</h3>}
             {experience.company && <p className="text-secondary">Company: {experience.company}</p>}
@@ -604,33 +604,35 @@ export const ResumePreview = ({ data  }) => {
       </div>
     )}
 
-    <div className="page-break"></div> {/* Page Break */}
+    {/* <div className="page-break"></div> Page Break */}
 
     {/* Education Section */}
     {resumeData.resumeEducations?.length > 0 && (
       <div className={sectionClass}>
-        <h2 className="h4 text-dark">Education</h2>
         {resumeData.resumeEducations.map((education, index) => (
+          
           <div key={index} className="mb-3">
+                 {education.college &&   <h3 className="h4 text-dark">Education</h3>}
+
             {education.college && <h3 className="h5">College: {education.college}</h3>}
             {education.standard && <p className="text-secondary">Field of Study: {education.standard}</p>}
             {education.startYear && education.endYear && (
               <p>Duration: {education.startYear} - {education.endYear}</p>
             )}
-            {education.cgpa && <p>CGPA: {education.cgpa}</p>}
+            {education.cgpa && <p> {education.cgpa}</p>}
           </div>
         ))}
       </div>
     )}
-  </div>
+  {/* </div> */}
 
-  <div className="page-break"></div> {/* Page Break */}
+  {/* <div className="page-break"></div> Page Break */}
 
   {/* Second Page Content */}
-  <div className="page-section">
+  {/* <div className="page-section"> */}
     {resumeData?.resumeSkills?.technicalSkills?.length > 0 && (
       <div className={sectionClass}>
-        <h2 className="h4 text-dark">Technical Skills</h2>
+        <h3 className="h4 text-dark">Technical Skills</h3>
         <ul>
           {resumeData.resumeSkills.technicalSkills.map((skill, index) => (
             <li key={index}>{skill}</li>
@@ -641,9 +643,10 @@ export const ResumePreview = ({ data  }) => {
 
     {resumeData.resumeProjects?.length > 0 && (
       <div className={sectionClass}>
-        <h2 className="h4 text-dark">Projects</h2>
         {resumeData.resumeProjects.map((project, index) => (
           <div key={index} className="mb-3">
+             {project.title   &&     <h3 className="h4 text-dark">Projects</h3>}
+
             {project.title && <h3 className="h5">Title: {project.title}</h3>}
             {project.description && <p>Description: {project.description}</p>}
             {project.startDate && project.endDate && (
@@ -657,9 +660,10 @@ export const ResumePreview = ({ data  }) => {
 
     {resumeData.resumeCertificates?.length > 0 && (
       <div className={sectionClass}>
-        <h2 className="h4 text-dark">Certificates</h2>
         {resumeData.resumeCertificates.map((certificate, index) => (
           <div key={index} className="mb-3">
+             {certificate.title &&        <h3 className="h4 text-dark">Certificates</h3>}
+
             {certificate.title && <h3 className="h5">Title: {certificate.title}</h3>}
             {certificate.issuedBy && <p className="text-secondary">Issued by: {certificate.issuedBy}</p>}
             {certificate.year && <p>Date of Issue: {certificate.year}</p>}
@@ -668,27 +672,55 @@ export const ResumePreview = ({ data  }) => {
       </div>
     )}
 
-    {resumeData?.resumeLanguages?.length > 0 && (
+    
+
+    {/* {resumeData?.resumeLanguages?.length > 0 && (
       <div className={sectionClass}>
-        <h2 className="h4 text-dark">Languages</h2>
+         <h3 className="h4 text-dark">Languages</h3> 
         <ul>
           {resumeData.resumeLanguages.map((language, index) => (
             <li key={index}>{language.languageName}</li>
           ))}
         </ul>
       </div>
-    )}
+    )} */}
 
-    {resumeData?.resumeIntrest?.intrests?.length > 0 && (
+{resumeData?.resumeLanguages?.some(lang => lang.languageName.trim() !== "") && (
+  <div className={sectionClass}>
+    <h3 className="h4 text-dark">Languages</h3>
+    <ul>
+      {resumeData.resumeLanguages.map((language, index) =>
+        language.languageName.trim() !== "" ? (
+          <li key={index}>{language.languageName}</li>
+        ) : null
+      )}
+    </ul>
+  </div>
+)}
+
+
+    {/* {resumeData?.resumeIntrest?.intrests?.length > 0 && (
       <div className={sectionClass}>
-        <h2 className="h4 text-dark">Interests</h2>
+        <h3 className="h4 text-dark">Interests</h3> 
         <ul>
           {resumeData.resumeIntrest.intrests.map((interest, index) => (
             <li key={index}>{interest}</li>
           ))}
         </ul>
       </div>
-    )}
+    )} */}
+
+{resumeData?.resumeIntrest?.intrests?.some(interest => interest.trim() !== "") && (
+  <div className={sectionClass}>
+    <h3 className="h4 text-dark">Interests</h3>
+    <ul>
+      {resumeData.resumeIntrest.intrests.map((interest, index) =>
+        interest.trim() !== "" ? <li key={index}>{interest}</li> : null
+      )}
+    </ul>
+  </div>
+)}
+
   </div>
 </div>
 

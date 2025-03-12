@@ -14,9 +14,13 @@ import axios from 'axios';
 
     //  export const apiUrl = 'http://192.168.86.29:8081'; //yash patel
     // export const apiUrl = 'http://192.168.1.144:8081'; //moinbasha 
-    export const apiUrl = 'http://localhost:8081'; //moinbasha pate
+    // export const apiUrl = 'http://localhost:8081'; //moinbasha pate
+    // export const apiUrl = 'http://192.168.86.235:8081'; //moinbasha pate
+        export const apiUrl = 'https://bitlab-resume-builder.onrender.com'; //moinbasha pate
 
-         
+    
+
+    
  
 const ApplicantAPIService = {
 }

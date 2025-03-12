@@ -4,6 +4,8 @@ import React, { useState, useEffect } from "react";
 import { FaPlus, FaTrash } from "react-icons/fa";
 import { useUserContext } from "../../common/UserProvider";
 import ResumeTemplateQueue from "./ResumeTemplateQueue";
+import { Toast, ToastContainer } from "react-bootstrap";
+
 import { apiUrl } from "../../../services/ApplicantAPIService";
 const ResumeForm = ({data, onChange}) => {
   const [resumeData, setResumeData] = useState({
