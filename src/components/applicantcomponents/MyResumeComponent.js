@@ -168,7 +168,7 @@ const MyResumeComponent = ({ pdfUrl, loading }) => {
       </section>
 
       <section className="flat-dashboard-password" style={{borderRadius:'23px 23px 1px 2px', marginBottom: 0}}>
-      <div className="themes-container">
+      {/* <div className="themes-container">
               <div className="row">
                 <div className="col-lg-12 col-md-12 ">
                   <div className="change-password bg-white" style={{borderRadius:'23px 23px 1px 2px', marginBottom: 0}}>
@@ -206,7 +206,7 @@ const MyResumeComponent = ({ pdfUrl, loading }) => {
           )}
         </div>
         </div>
-        </div>
+        </div> */}
       </section>
 
      

@@ -36,37 +36,66 @@ const ApplicantResume = () => {
     }
   };
  
+  // const fetchResumeContent = async () => {
+  //   try {
+  //     const jwtToken = localStorage.getItem('jwtToken');
+  //     // const response = await fetch(`${apiUrl}/resume/pdf/${user.id}`, {
+  //       // const userData = JSON.parse(localStorage.getItem("user"));
+  //       // const applicantId = userData?.id;
+  
+  //           const response = await fetch(`${apiUrl}/resume-builder/getResume/${user.id}`, {
+  //       headers: {
+  //         Authorization: `Bearer ${jwtToken}`,
+  //       },
+  //     });
+      
+  //     if (response.ok) {
+  //       const blob = await response.blob();
+  //       const url = URL.createObjectURL(blob);
+        
+
+  //       setPdfUrl(url);
+  //       setLoading(false);
+  //       setShowBanner(false);
+
+        
+  //     } else {
+  //       console.error('Error fetching resume content:', response);
+  //     }
+  //   } catch (error) {
+  //     console.error('Error fetching resume content:', error);
+  //   }
+  // };
+ 
+
   const fetchResumeContent = async () => {
     try {
       const jwtToken = localStorage.getItem('jwtToken');
-      // const response = await fetch(`${apiUrl}/resume/pdf/${user.id}`, {
-        // const userData = JSON.parse(localStorage.getItem("user"));
-        // const applicantId = userData?.id;
-  
-            const response = await fetch(`${apiUrl}/resume-builder/getResume/${user.id}`, {
+      const response = await fetch(`http://192.168.86.235:8081/resume/pdf/${user.id}`, {
         headers: {
           Authorization: `Bearer ${jwtToken}`,
         },
       });
-      
+  
       if (response.ok) {
         const blob = await response.blob();
         const url = URL.createObjectURL(blob);
         
-
         setPdfUrl(url);
         setLoading(false);
         setShowBanner(false);
-
-        
       } else {
         console.error('Error fetching resume content:', response);
+        setLoading(false); // Prevent infinite loading state
+        setShowBanner(true); // Show "Create Resume" UI when API fails
       }
     } catch (error) {
       console.error('Error fetching resume content:', error);
+      setLoading(false);
+      // setShowBanner(true); // Show "Create Resume" UI in case of an error
     }
   };
- 
+  
   return (
     <div className="dashboard__content">
     <section className="page-title-dashboard">
@@ -87,7 +116,7 @@ const ApplicantResume = () => {
                     <div className="inner">
                       <div className="group-col-2"></div>
       {showBanner ? (
-        <MyResumeComponent pdfUrl={pdfUrl} loading={loading} />
+        <MyResumeComponent loading={loading} />
       ) : (
         <EditAndDownloadComponent pdfUrl={pdfUrl} loading={loading} />
       )}
