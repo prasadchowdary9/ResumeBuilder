@@ -73,7 +73,6 @@
     "wow.js": "^1.2.2"
   },
   "scripts": {
-  "postinstall": "npm install",
   "start": "react-scripts start",
   "build": "react-scripts build",
   "test": "react-scripts test",
