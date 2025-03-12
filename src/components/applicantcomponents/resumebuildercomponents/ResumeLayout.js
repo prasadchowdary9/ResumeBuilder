@@ -122,7 +122,7 @@ function ResumeLayout() {
   
       console.log("Uploading PDF to Server...");
   
-      const response = await fetch(`http://192.168.86.235:8081/resume/upload/${user.id}`, {
+      const response = await fetch(`https://bitlab-resume-builder.onrender.com/resume/upload/${user.id}`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${jwtToken}`,
