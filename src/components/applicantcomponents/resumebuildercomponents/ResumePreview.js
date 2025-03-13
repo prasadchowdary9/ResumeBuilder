@@ -658,6 +658,9 @@ export const ResumePreview = ({ data  }) => {
       </div>
     )}
 
+      {/* <div className="page-break"></div> */}
+
+
     {resumeData.resumeCertificates?.length > 0 && (
       <div className={sectionClass}>
         {resumeData.resumeCertificates.map((certificate, index) => (
@@ -674,16 +677,7 @@ export const ResumePreview = ({ data  }) => {
 
     
 
-    {/* {resumeData?.resumeLanguages?.length > 0 && (
-      <div className={sectionClass}>
-         <h3 className="h4 text-dark">Languages</h3> 
-        <ul>
-          {resumeData.resumeLanguages.map((language, index) => (
-            <li key={index}>{language.languageName}</li>
-          ))}
-        </ul>
-      </div>
-    )} */}
+ 
 
 {resumeData?.resumeLanguages?.some(lang => lang.languageName.trim() !== "") && (
   <div className={sectionClass}>
@@ -699,16 +693,6 @@ export const ResumePreview = ({ data  }) => {
 )}
 
 
-    {/* {resumeData?.resumeIntrest?.intrests?.length > 0 && (
-      <div className={sectionClass}>
-        <h3 className="h4 text-dark">Interests</h3> 
-        <ul>
-          {resumeData.resumeIntrest.intrests.map((interest, index) => (
-            <li key={index}>{interest}</li>
-          ))}
-        </ul>
-      </div>
-    )} */}
 
 {resumeData?.resumeIntrest?.intrests?.some(interest => interest.trim() !== "") && (
   <div className={sectionClass}>
@@ -720,9 +704,8 @@ export const ResumePreview = ({ data  }) => {
     </ul>
   </div>
 )}
-
-  </div>
 </div>
+  </div>
 
 
   );
