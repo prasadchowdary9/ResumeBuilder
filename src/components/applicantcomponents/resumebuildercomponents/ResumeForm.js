@@ -4,6 +4,8 @@ import React, { useState, useEffect } from "react";
 import { FaPlus, FaTrash } from "react-icons/fa";
 import { useUserContext } from "../../common/UserProvider";
 import ResumeTemplateQueue from "./ResumeTemplateQueue";
+import { Toast, ToastContainer } from "react-bootstrap";
+
 import { apiUrl } from "../../../services/ApplicantAPIService";
 const ResumeForm = ({data, onChange}) => {
   const [resumeData, setResumeData] = useState({
@@ -58,7 +60,8 @@ const ResumeForm = ({data, onChange}) => {
       intrests: [""], 
     },
    });
-
+   const [showToast, setShowToast] = useState(false);
+   const [toastMessage, setToastMessage] = useState("");
   const [isEditing, setIsEditing] = useState(false);
   const user = useUserContext()?.user;
 
@@ -186,10 +189,12 @@ const ResumeForm = ({data, onChange}) => {
       }
 
       console.log("API Response:", response.data);
-      alert("Resume saved successfully!");
+      setToastMessage("Resume saved successfully!");
+        setShowToast(true);
     } catch (error) {
       console.error("Error saving resume:", error);
-      alert("Error saving resume.");
+      setToastMessage("Error saving resume.");
+      setShowToast(true);
     }
   };
 
@@ -978,12 +983,22 @@ const removeInterest = (index) => {
   <ResumeTemplateQueue />
 
   {/* Save Resume Button */}
-  <button className="btn btn-success mt-3" onClick={saveResumeData}>
+  <button type="button" className="btn btn-primary" onClick={saveResumeData}>
     Save Resume
   </button>
 </div>
 
-
+<ToastContainer position="top-end" className="p-3">
+        <Toast 
+          onClose={() => setShowToast(false)} 
+          show={showToast} 
+          delay={3000} 
+          autohide
+          bg={toastMessage.includes("Error") ? "danger" : "success"}
+        >
+          <Toast.Body>{toastMessage}</Toast.Body>
+        </Toast>
+      </ToastContainer>
 
       {/* Add more sections like Education, Skills, etc., following the same pattern */}
     </div>

@@ -14,32 +14,35 @@
       page-break-before: always;
     }
   } */
-  
-  .page-section {
-    overflow: visible !important;
-  }
-
-
-
-
-  #resume-preview {
-    width: 100%;
-    overflow: hidden;
-  }
-  
   .page-break {
-    page-break-before: always;
-    display: block;
-    height: 10px; /* Ensure proper spacing */
+    display: none; /* Hide in normal view */
+    height: 0;
+    margin: 0;
+    padding: 0;
   }
-  
   
   @media print {
-    .page-section {
-      page-break-before: always; /* Ensures new sections start on a new page */
-    }
     .page-break {
-      page-break-after: always; /* Forces a new page after this element */
+      display: block;
+      height: 1px;
+      page-break-before: always;
+      margin-top: 20mm; /* Add space before new page */
+    }
+    
+    #resume-preview {
+      width: 100% !important;
+      display: block !important;
+      visibility: visible !important;
+      overflow: visible !important;
+    }
+    
+    .page-section {
+      page-break-inside: avoid;
+      break-inside: avoid;
+    }
+    
+    .avoid-break {
+      page-break-inside: avoid;
+      break-inside: avoid;
     }
   }
-  

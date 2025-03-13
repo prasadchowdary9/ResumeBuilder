@@ -75,11 +75,12 @@ function ResumeLayout() {
   const [toastVariant, setToastVariant] = useState("success"); // success or danger
 
   const user = useUserContext().user;
+
   const handleSaveOrUpload = async () => {
     try {
       console.log("Starting Resume Save & Upload...");
   
-      if (!resumeData || !resumeData.resumePersonalInfo || !resumeData.resumePersonalInfo.fullName) {
+      if (!resumeData || !resumeData.resumePersonalInfo?.fullName) {
         console.error("Missing personal details!");
         setToastMessage("Please fill in your personal details before saving.");
         setToastVariant("danger");
@@ -90,28 +91,58 @@ function ResumeLayout() {
       const fileName = `${resumeData.resumePersonalInfo.fullName.toLowerCase().replace(/\s+/g, "_")}_resume.pdf`;
       const element = document.getElementById("resume-preview");
   
-      if (!element) {
-        console.error("Resume preview element not found!");
+      if (!element || !element.innerHTML.trim()) {
+        console.error("Resume preview element is empty or missing!");
         return;
       }
   
       console.log("Generating PDF...");
+      console.log("Resume HTML:", element.innerHTML); // Debugging content
+  
+      // Ensure CSS is applied for page breaks
+      const style = document.createElement("style");
+      style.innerHTML = `
+        #resume-preview {
+          width: 210mm;
+          min-height: 480mm;
+          overflow: visible;
+        }
+        // .page-break { page-break-before: always; }
+        section, div { break-inside: avoid; }
+        h2, h3 { page-break-after: avoid; }
+        p, ul, li { page-break-inside: avoid; }
+      `;
+      document.head.appendChild(style);
       
-      const pdfBlob = await html2pdf().from(element).outputPdf("blob");
+      document.head.appendChild(style);
+  
+      const opt = {
+        margin: 5,
+        filename: fileName,
+        image: { type: "jpeg", quality: 0.98 },
+        html2canvas: { scale: 2, useCORS: true, allowTaint: false },
+        jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
+        // pagebreak: { mode: [ "css"] },
+      };
+  
+      // Generate PDF once and reuse the instance
+      const pdfInstance = html2pdf().set(opt).from(element);
+      const pdfBlob = await pdfInstance.outputPdf("blob");
+      await pdfInstance.save();
   
       if (!pdfBlob) {
         console.error("PDF generation failed!");
         return;
       }
   
-      console.log("PDF Generated Successfully:", pdfBlob);
+      console.log("PDF Generated Successfully");
   
-      const formData = new FormData();
+      // Prepare form data
       const pdfFile = new File([pdfBlob], fileName, { type: "application/pdf" });
+      const formData = new FormData();
       formData.append("resume", pdfFile);
   
       const jwtToken = localStorage.getItem("jwtToken");
-  
       if (!jwtToken) {
         console.error("Missing JWT Token!");
         setToastMessage("User authentication failed. Please log in again.");
@@ -120,32 +151,38 @@ function ResumeLayout() {
         return;
       }
   
+      if (!user?.id) {
+        console.error("User ID is missing!");
+        setToastMessage("User information is incomplete. Please try again.");
+        setToastVariant("danger");
+        setShowToast(true);
+        return;
+      }
+  
       console.log("Uploading PDF to Server...");
   
-      const response = await fetch(`https://bitlab-resume-builder.onrender.com/resume/upload/${user.id}`, {
+      const response = await fetch(`${apiUrl}/resume/upload/${user.id}`, {
+
         method: "POST",
         headers: {
           Authorization: `Bearer ${jwtToken}`,
         },
-        body: formData, // FormData ensures correct content type
+        body: formData,
       });
   
-      console.log("Server Response:", response);
-  
       const responseText = await response.text();
-      console.log("Server Response Text:", responseText);
   
       if (response.ok) {
         console.log("Resume uploaded successfully!");
         setToastMessage("Resume uploaded successfully!");
         setToastVariant("success");
-        setShowToast(true);
       } else {
         console.error("Upload Failed:", responseText);
         setToastMessage("Failed to upload resume: " + responseText);
         setToastVariant("danger");
-        setShowToast(true);
       }
+  
+      setShowToast(true);
     } catch (error) {
       console.error("Error in Save & Upload:", error);
       setToastMessage("Error uploading resume.");
@@ -153,7 +190,7 @@ function ResumeLayout() {
       setShowToast(true);
     }
   };
-
+  
   // const handleDownloadPDF = async () => {
   //   if (!resumeData.resumePersonalInfo || !resumeData.resumePersonalInfo.fullName) {
   //     alert("Please fill in your personal details before downloading.");
@@ -256,3 +293,9 @@ function ResumeLayout() {
 }
 
 export default ResumeLayout;
+
+
+
+
+
+
