@@ -65,13 +65,7 @@ const ResumeForm = ({data, onChange}) => {
   const [isEditing, setIsEditing] = useState(false);
   const user = useUserContext()?.user;
 
-  // useEffect(() => {
-  //   if (user?.id,data) {
-  //     fetchResumeData();
-  //     setResumeData(data);
-
-  //   }
-  // }, [user?.id,data]); // Depend only on `user?.id`
+ //updated resumeform
 
 
 
